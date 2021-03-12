@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <array name="unit_array">
+        <item>kg.</item>
+        <item>cm.</item>
+        <item>m.</item>
+        <item>km.</item>
+    </array>
+</resources>

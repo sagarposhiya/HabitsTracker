@@ -1,0 +1,83 @@
+plugins {
+    id 'com.android.application'
+}
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'realm-android'
+//apply plugin: 'com.google.firebase.crashlytics'
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.example.habitstracker"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
+
+    //Butter knife
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+
+    //Firebase
+    implementation platform('com.google.firebase:firebase-bom:26.4.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.firebase:firebase-database:19.6.0'
+   // implementation 'com.google.firebase:firebase-crashlytics'
+
+    //Chart
+    implementation project(':MPChartLib')
+
+    //Date Picker Dialog
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
+
+    //EditText
+    implementation 'com.github.edgar-zigis:materialtextfield:1.4.4'
+
+    //Expandable Recyclerview
+    implementation "com.hendraanggrian.recyclerview:recyclerview-expandable:0.1"
+
+    //Google material
+    //implementation 'com.google.android.material:material:1.3.0'
+    implementation 'com.google.android.material:material:1.3.0-alpha01'
+
+    //SeekBar
+    implementation 'com.crystal:crystalrangeseekbar:1.1.3'
+    implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.50"
+
+    // Bottom Sheet
+    implementation 'com.qhutch.bottomsheetlayout:bottomsheetlayout:0.1.9'
+
+    //Color Picker
+    implementation 'com.github.QuadFlask:colorpicker:0.0.15'
+}

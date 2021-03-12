@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">HabitsTracker</string>
+    <string name="web_client_id">692359302218-umgngdvjc4bqurck0vkd2l4edc3m00bd.apps.googleusercontent.com</string>
+    <string name="txtMsgDeleteEntry">Delete Entry</string>
+</resources>
