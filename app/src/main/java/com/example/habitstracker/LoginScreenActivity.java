@@ -126,7 +126,7 @@ public class LoginScreenActivity extends AppCompatActivity {
                         FirebaseParam param = snapshot.getValue(FirebaseParam.class);
                         paramArrayList.add(param);
                     }
-                    Toast.makeText(LoginScreenActivity.this, "Data fetched " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LoginScreenActivity.this, "Data fetched " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
                     addInDatabase(paramArrayList);
                 } else {
                     // Toast.makeText(LoginScreenActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -167,7 +167,7 @@ public class LoginScreenActivity extends AppCompatActivity {
                         //   realm.commitTransaction();
                     }
 
-                    Toast.makeText(LoginScreenActivity.this, "Data added " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LoginScreenActivity.this, "Data added " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {

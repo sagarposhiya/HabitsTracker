@@ -37,6 +37,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class AddEntryActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -102,7 +103,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                tracks = realm.where(Track.class).findAll();
+                tracks = realm.where(Track.class).sort("orderPosition", Sort.ASCENDING).findAll();
                 lstTracks.addAll(tracks);
             }
         });
@@ -112,7 +113,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         nowSelected = Calendar.getInstance();
         //  now.set(year, month - 1, dayOfMonth, 0, 0);
         // SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd ,YYYY hh:mm");
+        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd YYYY hh:mm");
         String formatted = format1.format(nowSelected.getTime());
         txtToolbarTitle.setText("" + formatted);
     }
@@ -254,7 +255,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         myMinute = minute;
         nowSelected = Calendar.getInstance();
         nowSelected.set(myYear, myMonth, myday, myHour, myMinute);
-        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd ,yyyy hh:mm");
+        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd yyyy hh:mm");
         String formatted = format1.format(nowSelected.getTime());
         txtToolbarTitle.setText("" + formatted);
     }

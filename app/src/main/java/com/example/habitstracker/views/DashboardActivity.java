@@ -5,7 +5,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.NestedScrollingChild;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +21,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,8 +39,10 @@ import com.example.habitstracker.models.FirebaseParam;
 import com.example.habitstracker.models.Track;
 import com.example.habitstracker.models.Unit;
 import com.example.habitstracker.utils.AppUtils;
+import com.example.habitstracker.utils.BottomSheetBehaviorRecyclerManager;
 import com.example.habitstracker.utils.ClaimsXAxisValueFormatter;
 import com.example.habitstracker.utils.Constants;
+import com.example.habitstracker.utils.ICustomBottomSheetBehavior;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -48,6 +55,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.Utils;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
@@ -107,6 +115,19 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     EntryListAdapter listAdapter;
     Track track;
     private DatabaseReference mDatabase;
+
+
+
+    private BottomSheetBehavior<View> mBottomSheetBehavior;
+    private View mBottomSheetView;
+
+    private CoordinatorLayout mParent;
+
+
+    private RecyclerView mBottomSheetRecyclerLeft;
+    private LinearLayoutManager mLayoutManagerLeft;
+   // private RecyclerAdapter mAdapterLeft;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +138,9 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         getTracks();
         setTrackAdapter();
         setEvents();
+       // findScrollingChild(rvEntries);
     }
+
 
     public void toggleBottomSheet() {
 //        if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
@@ -140,6 +163,37 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     }
 
     private void setEvents() {
+
+        rvEntries.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                v.onTouchEvent(event);
+                return true;
+            }
+        });
+
+//        rvEntries.setOnTouchListener(new RecyclerView.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                int action = event.getAction();
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        // Disallow NestedScrollView to intercept touch events.
+//                        v.getParent().requestDisallowInterceptTouchEvent(true);
+//                        break;
+//
+//                    case MotionEvent.ACTION_UP:
+//                        // Allow NestedScrollView to intercept touch events.
+//                        v.getParent().requestDisallowInterceptTouchEvent(false);
+//                        break;
+//                }
+//
+//                // Handle RecyclerView touch events.
+//                v.onTouchEvent(event);
+//                return true;
+//            }
+//        });
 
 //        tracks.addChangeListener(new RealmChangeListener<RealmResults<Track>>() {
 //            @Override
@@ -238,6 +292,42 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         rvEntries.setLayoutManager(new LinearLayoutManager(this));
         llBottomSheet.setOnClickListener(this);
         txtTitle.setText("Habits Tracker");
+        rvEntries.setNestedScrollingEnabled(false);
+//        bottom_sheet_layout.setNestedScrollingEnabled(true);
+
+
+
+//        mParent = (CoordinatorLayout) findViewById(R.id.parent_container);
+//        mParent.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+//
+//        mBottomSheetView = findViewById(R.id.main_bottomsheet);
+//
+//
+//        mBottomSheetRecyclerLeft = (RecyclerView) findViewById(R.id.btm_recyclerview_left);
+//        mLayoutManagerLeft = new LinearLayoutManager(this);
+//        mBottomSheetRecyclerLeft.setLayoutManager(mLayoutManagerLeft);
+//
+//        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetView);
+//
+//        mBottomSheetBehavior.setPeekHeight(150);
+//        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//
+//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(View bottomSheet, int newState) {
+//                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+//                    //  mBottomSheetBehavior.setPeekHeight(0);
+//                }
+//            }
+//
+//            @Override
+//            public void onSlide(View bottomSheet, float slideOffset) {
+//            }
+//        });
+//
+//        BottomSheetBehaviorRecyclerManager manager = new BottomSheetBehaviorRecyclerManager(mParent, (ICustomBottomSheetBehavior) mBottomSheetBehavior, mBottomSheetView);
+//        manager.addControl(mBottomSheetRecyclerLeft);
+//        manager.create();
     }
 
     @Override
@@ -247,7 +337,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
     @Override
     public void onNothingSelected() {
-
     }
 
     private void addUnits() {
@@ -276,7 +365,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                     }
                 }
             });
-
         } finally {
             if (realm != null) {
                 realm.close();
@@ -299,6 +387,9 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
             case R.id.menuEditParameter:
                 Intent intent = new Intent(DashboardActivity.this, AddTrackActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.menuSetReminder:
+                Toast.makeText(this, "Reminder in Working", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -343,7 +434,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
             } else {
                 txtTitle.setText("Habits Tracker");
                 startActivity(getIntent());
-                finish();
+               // finish();
             }
         } else {
             finish();
@@ -452,7 +543,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         leftAxis.setDrawZeroLine(false);
         leftAxis.setDrawLimitLinesBehindData(false);
         leftAxis.setDrawLabels(true);
-
         volumeReportChart.getDescription().setEnabled(false);
         Description description = new Description();
         description.setText("");

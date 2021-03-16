@@ -48,6 +48,7 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     ArrayList<Track> newTracks = new ArrayList<>();
     TrackAddAdapter trackAddAdapter;
     NewTrackAdapter newTrackAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

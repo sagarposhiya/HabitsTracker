@@ -20,6 +20,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".views.DashboardActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".LoginScreenActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">

@@ -1,6 +1,7 @@
 package com.example.habitstracker.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,6 @@ public class AddEntryAdapter extends RecyclerView.Adapter<AddEntryAdapter.ViewHo
         holder.txtUnit.setText(track.getUnit());
         if (track.getEntries().size() > 0) {
             holder.mtfName.setHint(String.valueOf(track.getEntries().get(track.getEntries().size() - 1).getValue()));
-            //holder.mtfName.setHint(String.valueOf(track.getEntries().get(track.getEntries().size() - 1).getValue()));
         }
 
         holder.rangeSeekbar.setLeftThumbColor(context.getColor(R.color.colorPrimary));
@@ -65,6 +65,13 @@ public class AddEntryAdapter extends RecyclerView.Adapter<AddEntryAdapter.ViewHo
         if (track.getEntries().size() > 0 && track.getEntries().get(track.getEntries().size() - 1).getValue() <= 10) {
             holder.rangeSeekbar.setMinStartValue((int) track.getEntries().get(track.getEntries().size() - 1).getValue());
             holder.bubbleBar.setProgress((int) track.getEntries().get(track.getEntries().size() - 1).getValue());
+        }
+
+        if (track.getColor() != null) {
+            holder.bubbleBar.setBubbleColor(Color.parseColor(track.getColor()));
+            holder.bubbleBar.setThumbColor(Color.parseColor(track.getColor()));
+            holder.bubbleBar.setTrackColor(Color.parseColor(track.getColor()));
+            holder.bubbleBar.setSecondTrackColor(Color.parseColor(track.getColor()));
         }
 
      //  holder.bubbleBar.setSelected(true);

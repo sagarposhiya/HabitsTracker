@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center"
-    android:minHeight="50dp"
-    android:minWidth="160dp"
+    android:minHeight="35dp"
+    android:minWidth="130dp"
     android:orientation="horizontal">
 
     <ImageView

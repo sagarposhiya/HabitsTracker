@@ -3,9 +3,10 @@
 
 
     <array name="unit_array">
-        <item>kg.</item>
-        <item>cm.</item>
-        <item>m.</item>
-        <item>km.</item>
+        <item></item>
+        <item>Steps.</item>
+        <item>Miles.</item>
+        <item>Km.</item>
+        <item>Lbs.</item>
     </array>
 </resources>

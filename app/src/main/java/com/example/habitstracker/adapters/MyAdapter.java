@@ -346,8 +346,8 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
         TextView txtNoData;
         @BindView(R.id.txtUnit)
         TextView txtUnit;
-        @BindView(R.id.row)
-        ExpandableItem row;
+//        @BindView(R.id.row)
+//        ExpandableItem row;
         @BindView(R.id.lineChartContent)
         LineChart lineChartContent;
         public ViewHolder(@NonNull View itemView) {
