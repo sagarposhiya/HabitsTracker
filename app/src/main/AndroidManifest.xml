@@ -3,15 +3,24 @@
     package="com.example.habitstracker">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.HabitsTracker">
+        <activity android:name=".views.AddReminderActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+        <activity
+            android:name=".views.ReminderActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
         <activity
             android:name=".views.AddEntryActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -20,9 +29,10 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".views.DashboardActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".LoginScreenActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".LoginScreenActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +40,46 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".views.AddEditAlarmActivity"/>
+
+<!--        <receiver android:name=".receivers.AlarmReceiver" android:process=":remote">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.example.helloandroid.alarms" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
+
+
+<!--        <receiver-->
+<!--            android:name=".receivers.AlarmReceiver"-->
+<!--            android:directBootAware="true"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
+<!--                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
+<!--        <service-->
+<!--            android:name=".receivers.MyService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"-->
+<!--            android:process=":remote" />-->
+
+
+        <service android:name=".receivers.LoadAlarmsService" />
+
+<!--        <receiver android:name=".receivers.LoadAlarmsReceiver" />-->
+
+        <receiver android:name=".receivers.AlarmReceiver" />
+
+        <receiver android:name=".receivers.BootReceiver" android:enabled="true" android:exported="true">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

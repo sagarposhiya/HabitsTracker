@@ -50,16 +50,16 @@
                     app:bar_highlight_color="#E07416"/>
 
                 <com.xw.repo.BubbleSeekBar
+                    android:layout_marginTop="10dp"
                     android:id="@+id/bubbleBar"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="150dp"
                     app:bsb_max="10"
                     app:bsb_min="0"
                     app:bsb_bubble_text_size="15dp"
                     app:bsb_thumb_radius_on_dragging="10dp"
                     app:bsb_always_show_bubble="true"
-                    app:bsb_thumb_radius="10dp"
-                    app:bsb_show_section_text="false"/>
+                    app:bsb_thumb_radius="13dp" />
 
                 <TextView
                     android:id="@+id/txtMin"

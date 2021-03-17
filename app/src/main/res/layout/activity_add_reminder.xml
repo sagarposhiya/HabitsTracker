@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".views.AddReminderActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imgBack"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:id="@+id/txtToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Add Reminders"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:layout_toRightOf="@id/imgBack"
+                android:layout_marginLeft="10dp"/>
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imgAdd"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_check"
+                android:padding="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"/>
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textColor="@color/black"
+            android:textSize="15dp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"
+            android:id="@+id/edTitle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_edittext"
+            android:drawableRight="@drawable/ic_text"
+            android:hint="Title"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set Date"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txtDate"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_edittext"
+            android:drawableRight="@drawable/ic_cal"
+            android:gravity="center_vertical"
+            android:hint="Set Date"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set Time"
+            android:textColor="@color/black"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:textColorHint="@color/black"
+            android:id="@+id/txtTime"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_edittext"
+            android:hint="Set Time"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:drawableRight="@drawable/ic_clock"/>
+
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/bg_button"
+            android:layout_marginLeft="40dp"
+            android:text="Add"
+            android:textSize="18dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

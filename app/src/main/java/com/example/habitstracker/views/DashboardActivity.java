@@ -389,7 +389,8 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                 startActivity(intent);
                 break;
             case R.id.menuSetReminder:
-                Toast.makeText(this, "Reminder in Working", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(DashboardActivity.this, ReminderActivity.class);
+                startActivity(intent1);
                 break;
         }
         return super.onOptionsItemSelected(item);

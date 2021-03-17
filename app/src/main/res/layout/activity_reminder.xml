@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".views.ReminderActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imgBack"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:id="@+id/txtToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Reminders"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:layout_toRightOf="@id/imgBack"
+                android:layout_marginLeft="10dp"/>
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imgAdd"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_check"
+                android:padding="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"/>
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="10dp"
+        android:id="@+id/rvReminders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/flotingAddReminder"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:src="@drawable/ic_add"
+        app:maxImageSize="35dp" />
+
+</RelativeLayout>

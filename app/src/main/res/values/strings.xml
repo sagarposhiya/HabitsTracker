@@ -2,4 +2,31 @@
     <string name="app_name">HabitsTracker</string>
     <string name="web_client_id">692359302218-umgngdvjc4bqurck0vkd2l4edc3m00bd.apps.googleusercontent.com</string>
     <string name="txtMsgDeleteEntry">Delete Entry</string>
+
+    <!-- Days -->
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+
+    <string name="time">Time</string>
+    <string name="label">Label</string>
+    <string name="days">Days</string>
+    <string name="edit_alarm">Edit Reminder</string>
+    <string name="add_alarm">Add Reminder</string>
+    <string name="add_label_hint">Add a label!</string>
+    <string name="update_complete">Changes Saved</string>
+    <string name="update_failed">Update Failed</string>
+    <string name="delete_complete">Reminder Deleted</string>
+    <string name="delete_failed">Delete Failed</string>
+    <string name="delete_dialog_title">Confirm Delete Reminder</string>
+    <string name="delete_dialog_content">Are you sure you would like to delete this reminder?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- Notification -->
+    <string name="channel_name">Habits Tracker</string>
 </resources>
