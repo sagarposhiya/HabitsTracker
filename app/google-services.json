@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:692359302218:android:1c9b115cf9cf801caa6ab3",
+        "mobilesdk_app_id": "1:692359302218:android:6485ef6707ce42dbaa6ab3",
         "android_client_info": {
-          "package_name": "com.example.googlelogindemo"
+          "package_name": "com.example.habitstracker"
         }
       },
       "oauth_client": [
         {
-          "client_id": "692359302218-17hqm6c0jusa8lhd422flfljfft2fkj4.apps.googleusercontent.com",
+          "client_id": "692359302218-71afkekkf7sc3dvkqkkmd1q62b0gpkv5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.googlelogindemo",
+            "package_name": "com.example.habitstracker",
             "certificate_hash": "2a0067fae93a963e9e6fc7d5c7abd67028ec7a36"
           }
         },
@@ -45,9 +45,46 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:692359302218:android:6485ef6707ce42dbaa6ab3",
+        "mobilesdk_app_id": "1:692359302218:android:3321dbb4d1333af7aa6ab3",
         "android_client_info": {
-          "package_name": "com.example.habitstracker"
+          "package_name": "com.example.habitstracker_newversion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692359302218-g5n51ucf8bu5mncqecpeltprsc0qqr06.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.habitstracker_newversion",
+            "certificate_hash": "2a0067fae93a963e9e6fc7d5c7abd67028ec7a36"
+          }
+        },
+        {
+          "client_id": "692359302218-umgngdvjc4bqurck0vkd2l4edc3m00bd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhjgy1IgY7dzhxNXcwIV0ub90ywWPenCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "692359302218-umgngdvjc4bqurck0vkd2l4edc3m00bd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692359302218:android:1f2bf4a27e1f79a7aa6ab3",
+        "android_client_info": {
+          "package_name": "com.example.habitstracker_version"
         }
       },
       "oauth_client": [

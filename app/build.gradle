@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.habitstracker"
+        applicationId "com.example.habitstracker_version"
       //  manifestPlaceholders = [bootPriority:"999"]
         minSdkVersion 21
         targetSdkVersion 30
