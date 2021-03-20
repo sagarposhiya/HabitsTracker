@@ -40,6 +40,12 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     ImageView imgAdd;
     @BindView(R.id.imgClose)
     ImageView imgClose;
+    @BindView(R.id.llSlider)
+    LinearLayout llSlider;
+    @BindView(R.id.llYesNo)
+    LinearLayout llYesNo;
+    @BindView(R.id.llValue)
+    LinearLayout llValue;
     RealmResults<Unit> units;
     ArrayList<String> lstUnits;
     Realm mRealm;
@@ -89,6 +95,9 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
         mRealm = Realm.getDefaultInstance();
         rvTracks.setLayoutManager(new LinearLayoutManager(this));
         llAddNewParam.setOnClickListener(this);
+        llSlider.setOnClickListener(this);
+        llYesNo.setOnClickListener(this);
+        llValue.setOnClickListener(this);
         imgAdd.setOnClickListener(this);
         imgClose.setOnClickListener(this);
     }
@@ -120,7 +129,25 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
             case R.id.imgClose:
                 onBackPressed();
                 break;
+            case R.id.llSlider:
+                slider();
+                break;
+            case R.id.llYesNo:
+                yesno();
+                break;
+            case R.id.llValue:
+                valye();
+                break;
         }
+    }
+
+    private void valye() {
+    }
+
+    private void yesno() {
+    }
+
+    private void slider() {
     }
 
     private void addTracks() {

@@ -58,12 +58,11 @@ public class AddEntryAdapter extends RecyclerView.Adapter<AddEntryAdapter.ViewHo
             holder.mtfName.setHint(String.valueOf(track.getEntries().get(track.getEntries().size() - 1).getValue()));
         }
 
-        holder.rangeSeekbar.setLeftThumbColor(context.getColor(R.color.colorPrimary));
         holder.bubbleBar.setThumbColor(context.getColor(R.color.colorPrimary));
         holder.bubbleBar.setSecondTrackColor(context.getColor(R.color.colorPrimary));
         holder.bubbleBar.setBubbleColor(context.getColor(R.color.colorPrimary));
         if (track.getEntries().size() > 0 && track.getEntries().get(track.getEntries().size() - 1).getValue() <= 10) {
-            holder.rangeSeekbar.setMinStartValue((int) track.getEntries().get(track.getEntries().size() - 1).getValue());
+           //holder.rangeSeekbar.setMinStartValue((int) track.getEntries().get(track.getEntries().size() - 1).getValue());
             holder.bubbleBar.setProgress((int) track.getEntries().get(track.getEntries().size() - 1).getValue());
         }
 
@@ -99,23 +98,6 @@ public class AddEntryAdapter extends RecyclerView.Adapter<AddEntryAdapter.ViewHo
             }
         });
 
-        holder.rangeSeekbar.setOnSeekbarChangeListener(new OnSeekbarChangeListener() {
-            @Override
-            public void valueChanged(Number value) {
-                holder.txtMin.setText(value.toString());
-                if (!value.toString().equalsIgnoreCase("0")) {
-                    holder.mtfName.setText(value.toString());
-                }
-            }
-        });
-
-        holder.rangeSeekbar.setOnSeekbarFinalValueListener(new OnSeekbarFinalValueListener() {
-            @Override
-            public void finalValue(Number value) {
-              //  holder.txtMax.setText(value.toString());
-            }
-        });
-
     }
 
     public ArrayList<Track> getTracksFromList() {
@@ -132,8 +114,6 @@ public class AddEntryAdapter extends RecyclerView.Adapter<AddEntryAdapter.ViewHo
         EditText mtfName;
         @BindView(R.id.txtUnit)
         TextView txtUnit;
-        @BindView(R.id.rangeSeekbar1)
-        CrystalSeekbar rangeSeekbar;
         @BindView(R.id.bubbleBar)
         BubbleSeekBar bubbleBar;
         @BindView(R.id.txtMin)

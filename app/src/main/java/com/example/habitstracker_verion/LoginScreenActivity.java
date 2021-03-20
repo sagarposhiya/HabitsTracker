@@ -76,6 +76,7 @@ public class LoginScreenActivity extends AppCompatActivity {
         mRealm = Realm.getDefaultInstance();
         firebaseAuth = com.google.firebase.auth.FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
 //        authStateListener = new FirebaseAuth.AuthStateListener() {
 //            @Override
 //            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {

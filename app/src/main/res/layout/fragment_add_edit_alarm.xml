@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:inputType="textCapWords"
-            android:maxLength="15"
+            android:maxLength="35"
             android:textColor="@color/black"
             android:textStyle="italic"
             android:paddingLeft="10dp"

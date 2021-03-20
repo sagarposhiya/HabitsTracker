@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,8 +37,10 @@ import com.example.habitstracker_verion.models.FirebaseParam;
 import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.models.Unit;
 import com.example.habitstracker_verion.utils.AppUtils;
+import com.example.habitstracker_verion.utils.BottomSheetBehaviorRecyclerManager;
 import com.example.habitstracker_verion.utils.ClaimsXAxisValueFormatter;
 import com.example.habitstracker_verion.utils.Constants;
+import com.example.habitstracker_verion.utils.ICustomBottomSheetBehavior;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -49,6 +53,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.Utils;
+import com.example.habitstracker_verion.utils.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -79,8 +84,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     FloatingActionButton flotingAddEntry;
     @BindView(R.id.rlFullGraph)
     RelativeLayout rlFullGraph;
-    @BindView(R.id.exRvList)
-    ExpandableRecyclerView exRvList;
     @BindView(R.id.lineChartFull)
     LineChart lineChartFull;
     @BindView(R.id.bottom_sheet)
@@ -108,11 +111,25 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     Track track;
     private DatabaseReference mDatabase;
 
+    private BottomSheetBehavior<View> mBottomSheetBehavior;
+    private View mBottomSheetView;
+
+    private CoordinatorLayout mParent;
+
+
+    private RecyclerView mBottomSheetRecyclerRight;
+    private LinearLayoutManager mLayoutManagerRight;
+   // private RecyclerAdapter mAdapterRight;
+
+    private RecyclerView mBottomSheetRecyclerLeft;
+    private LinearLayoutManager mLayoutManagerLeft;
+   // private RecyclerAdapter mAdapterLeft;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.dashboard);
         ButterKnife.bind(this);
         getInit();
         addUnits();
@@ -120,6 +137,53 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         setTrackAdapter();
         setEvents();
        // findScrollingChild(rvEntries);
+    }
+
+    private void getInitBottomSheet() {
+
+//        mParent = (CoordinatorLayout) findViewById(R.id.parent_container);
+//        mParent.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+//
+//        mBottomSheetView = findViewById(R.id.main_bottomsheet);
+
+        mBottomSheetView.setVisibility(View.VISIBLE);
+        mBottomSheetRecyclerLeft = (RecyclerView) findViewById(R.id.btm_recyclerview_left);
+        mLayoutManagerLeft = new LinearLayoutManager(this);
+        mBottomSheetRecyclerLeft.setLayoutManager(mLayoutManagerLeft);
+
+//        mBottomSheetRecyclerRight = (RecyclerView) findViewById(R.id.btm_recyclerview_right);
+//        mLayoutManagerRight = new LinearLayoutManager(this);
+//        mBottomSheetRecyclerRight.setLayoutManager(mLayoutManagerRight);
+
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetView);
+
+        mBottomSheetBehavior.setPeekHeight(150);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    //  mBottomSheetBehavior.setPeekHeight(0);
+                }
+            }
+
+            @Override
+            public void onSlide(View bottomSheet, float slideOffset) {
+            }
+        });
+
+        mBottomSheetRecyclerLeft.setAdapter(listAdapter);
+
+//        mAdapterLeft.update(modelsLeft);
+//        mAdapterRight.update(modelsRight);
+
+        //helper to rule scrolls
+        BottomSheetBehaviorRecyclerManager manager = new BottomSheetBehaviorRecyclerManager(mParent, mBottomSheetBehavior, mBottomSheetView);
+        manager.addControl(mBottomSheetRecyclerLeft);
+       // manager.addControl(mBottomSheetRecyclerRight);
+        manager.create();
     }
 
     public void toggleBottomSheet() {
@@ -135,14 +199,14 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
     private void setEvents() {
 
-        rvEntries.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                v.onTouchEvent(event);
-                return true;
-            }
-        });
+//        rvEntries.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                v.getParent().requestDisallowInterceptTouchEvent(true);
+//                v.onTouchEvent(event);
+//                return true;
+//            }
+//        });
 
 //        rvEntries.setOnTouchListener(new RecyclerView.OnTouchListener() {
 //            @Override
@@ -264,6 +328,13 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         llBottomSheet.setOnClickListener(this);
         txtTitle.setText("Habits Tracker");
         rvEntries.setNestedScrollingEnabled(false);
+        mParent = (CoordinatorLayout) findViewById(R.id.parent_container);
+        mParent.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+
+        mBottomSheetView = findViewById(R.id.main_bottomsheet);
+
+        mBottomSheetView.setVisibility(View.GONE);
+
 //        bottom_sheet_layout.setNestedScrollingEnabled(true);
 
 
@@ -434,6 +505,8 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
         listAdapter = new EntryListAdapter(this,entries, track.getEntries(), this);
         rvEntries.setAdapter(listAdapter);
+
+        getInitBottomSheet();
         for (int i = 0; i < track.getEntries().size(); i++) {
             Entry entry = track.getEntries().get(i);
             dates.add(entry.getDate());

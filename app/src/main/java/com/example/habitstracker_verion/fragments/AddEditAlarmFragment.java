@@ -116,6 +116,7 @@ public final class AddEditAlarmFragment extends Fragment {
 
         alarm.setLabel(mLabel.getText().toString());
 
+        // setting Days for alarm from here
         alarm.setDay(Alarm.MON, mMon.isChecked());
         alarm.setDay(Alarm.TUES, mTues.isChecked());
         alarm.setDay(Alarm.WED, mWed.isChecked());
