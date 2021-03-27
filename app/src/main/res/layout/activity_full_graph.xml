@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_container"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/white"
-    android:layout_height="match_parent">
+    tools:context=".views.FullGraphActivity">
 
-    <!--main content-->
     <RelativeLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
@@ -37,41 +38,30 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/toolbar" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/flotingAddEntry"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            app:backgroundTint="@color/colorPrimary"
-            android:src="@drawable/ic_add"
-            app:maxImageSize="35dp" />
-
-
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rlFullGraph"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/toolbar"
             android:background="@color/white"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
             <com.github.mikephil.charting.charts.LineChart
+                android:layout_weight="0.5"
                 android:id="@+id/lineChartFull"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="42dp" />
 
-        </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_weight="0.5"
+                android:id="@+id/btm_recyclerview_left"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <!--bottomsheet content-->
@@ -103,6 +93,7 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/llBottomSheet"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -147,12 +138,12 @@
             android:orientation="horizontal">
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_marginTop="10dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/btm_recyclerview_left"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/white" />
@@ -174,95 +165,5 @@
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </LinearLayout>
     </RelativeLayout>
-
-
-    <com.qhutch.bottomsheetlayout.BottomSheetLayout
-        android:visibility="gone"
-        android:id="@+id/bottom_sheet_layout"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/lightGray"
-        app:collapsedHeight="40dp">
-
-
-        <LinearLayout
-            android:id="@+id/bottom_sheet"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="2"
-                    android:fontFamily="@font/poppins_regular"
-                    android:text="Entries"
-                    android:textAllCaps="true"
-                    android:textColor="#444"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:src="@drawable/ic_up"
-                    android:textSize="15dp"
-                    android:textStyle="bold">
-                </ImageView>
-
-            </LinearLayout>
-
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.core.widget.NestedScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fillViewport="true">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvEntries"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusableInTouchMode="true"
-                            android:orientation="vertical"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-
-                    </RelativeLayout>
-
-                </androidx.core.widget.NestedScrollView>
-
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
-        </LinearLayout>
-    </com.qhutch.bottomsheetlayout.BottomSheetLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

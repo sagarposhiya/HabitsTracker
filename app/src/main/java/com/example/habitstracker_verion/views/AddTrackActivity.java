@@ -1,6 +1,7 @@
 package com.example.habitstracker_verion.views;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +20,8 @@ import com.example.habitstracker_verion.adapters.NewTrackAdapter;
 import com.example.habitstracker_verion.adapters.TrackAddAdapter;
 import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.models.Unit;
+import com.example.habitstracker_verion.utils.AppUtils;
+import com.example.habitstracker_verion.utils.Constants;
 import com.example.habitstracker_verion.utils.ItemMoveCallback;
 import com.google.firebase.FirebaseApp;
 
@@ -46,6 +50,8 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     LinearLayout llYesNo;
     @BindView(R.id.llValue)
     LinearLayout llValue;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     RealmResults<Unit> units;
     ArrayList<String> lstUnits;
     Realm mRealm;
@@ -54,17 +60,24 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     ArrayList<Track> newTracks = new ArrayList<>();
     TrackAddAdapter trackAddAdapter;
     NewTrackAdapter newTrackAdapter;
-
+    String color;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_track);
         FirebaseApp.initializeApp(this);
         ButterKnife.bind(this);
+        setAppTheme();
         getInit();
         getUnits();
         getTracks();
         setAdapter();
+    }
+
+    private void setAppTheme() {
+        color = AppUtils.getStringPreference(this, Constants.themeColor);
+        toolbar.setBackgroundColor(Color.parseColor(color));
+      //  btnDone.setBackgroundColor(Color.parseColor(color));
     }
 
     private void setAdapter() {

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +22,8 @@ import com.example.habitstracker_verion.models.Reminder;
 import com.example.habitstracker_verion.receivers.LoadAlarmsReceiver;
 import com.example.habitstracker_verion.receivers.LoadAlarmsService;
 import com.example.habitstracker_verion.utils.AlarmUtils;
+import com.example.habitstracker_verion.utils.AppUtils;
+import com.example.habitstracker_verion.utils.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -48,15 +52,24 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     ArrayList<Reminder> lstReminders = new ArrayList<>();
     ReminderAdapter adapter;
     private AlarmsAdapter mAdapter;
+    String color;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder);
         ButterKnife.bind(this);
+        setAppTheme();
         mReceiver = new LoadAlarmsReceiver(this);
         getInit();
        // getReminder();
         setReminderAdapter();
+    }
+
+    private void setAppTheme() {
+        color = AppUtils.getStringPreference(this, Constants.themeColor);
+        toolbar.setBackgroundColor(Color.parseColor(color));
+        //  btnDone.setBackgroundColor(Color.parseColor(color));
+        flotingAddReminder.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
     }
 
     @Override

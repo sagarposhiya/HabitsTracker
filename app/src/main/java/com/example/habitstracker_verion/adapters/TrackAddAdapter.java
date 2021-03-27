@@ -55,81 +55,6 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
         int tempend = toPosition;
         moveItem(tracks.get(fromPosition),fromPosition,toPosition);
         notifyItemMoved(fromPosition, toPosition);
-
-//        if (fromPosition < toPosition) {
-//            for (int i = fromPosition; i <= toPosition - 1; i++) {
-//                Collections.swap(tracks, i, i + 1);
-//                Realm realm = null;
-//                try {
-//                    realm = Realm.getDefaultInstance();
-//                    int finalI = i;
-//                    realm.executeTransaction(new Realm.Transaction() {
-//                        @Override
-//                        public void execute(Realm realm) {
-//                            Track track1 = realm.where(Track.class).equalTo("id",tracks.get(fromPosition).getId()).findFirst();
-//                            track1.setOrderPosition(tracks.get(finalI).getOrderPosition());
-//                            realm.insertOrUpdate(track1);
-//                        }
-//                    });
-//                } finally {
-//                    if (realm != null) {
-//                        realm.close();
-//                    }
-//                }
-//            }
-////
-//        } else {
-//            for (int i = fromPosition; i >= toPosition + 1; i--) {
-//                Collections.swap(tracks, i, i - 1);
-//                Realm realm = null;
-//                try {
-//                    realm = Realm.getDefaultInstance();
-//                    int finalI = i;
-//                    realm.executeTransaction(new Realm.Transaction() {
-//                        @Override
-//                        public void execute(Realm realm) {
-//                            Track track1 = realm.where(Track.class).equalTo("id",tracks.get(fromPosition).getId()).findFirst();
-//                            track1.setOrderPosition(tracks.get(finalI).getOrderPosition());
-//                            realm.insertOrUpdate(track1);
-//                        }
-//                    });
-//                } finally {
-//                    if (realm != null) {
-//                        realm.close();
-//                    }
-//                }
-//            }
-//        }
-//        }
-       // notifyItemMoved(fromPosition, toPosition);
-//
-//        Log.d("drop", String.valueOf(fromPosition));
-//        Log.d("drop", String.valueOf(toPosition));
-
-
-
-
-
-//        Realm realm = null;
-//        try {
-//            realm = Realm.getDefaultInstance();
-//            realm.executeTransaction(new Realm.Transaction() {
-//                @Override
-//                public void execute(Realm realm) {
-//                    Track track1 = realm.where(Track.class).equalTo("id",tracks.get(fromPosition).getId()).findFirst();
-//                   // Track track = tracks.get(fromPosition);
-//                    track1.setOrderPosition(toPosition);
-//                    realm.insertOrUpdate(track1);
-//                   // realm.insertOrUpdate(tracks);
-//                    Log.e("ORDERED",tracks.get(fromPosition).getName() + "  " + (toPosition - 1) + "");
-//                }
-//            });
-//
-//        } finally {
-//            if (realm != null) {
-//                realm.close();
-//            }
-//        }
     }
 
     public void moveItem(Track item, final int fromPosition, final int toPosition) {
@@ -148,7 +73,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                 .findAll();
                         for (int i = 0; i < results.size(); i++) {
                             // results.get(i).index -= 1;
-                            results.get(i).setOrderPosition(results.get(i).getOrderPosition() - 1);
+                            results.get(i).setOrderPosition(results.get(i).getOrderPosition() - 2);
                         }
                     } else {
                         RealmResults<Track> results = realm.where(Track.class)
@@ -297,7 +222,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                             .setTitle("Choose color")
                            // .initialColor(currentBackgroundColor)
                             .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                            .density(12)
+                           // .noSliders()
                             .showAlphaSlider(false)
                             .setOnColorSelectedListener(new OnColorSelectedListener() {
                                 @Override

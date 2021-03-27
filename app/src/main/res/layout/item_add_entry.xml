@@ -47,13 +47,12 @@
                     android:minHeight="50dp"
                     app:bsb_max="10"
                     app:bsb_min="0"
+                    app:bsb_second_track_size="8dp"
                     app:bsb_track_size="8dp"
-                    app:bsb_auto_adjust_section_mark="true"
-                    app:bsb_bubble_text_size="18dp"
-                    app:bsb_always_show_bubble_delay="10"
-                    app:bsb_thumb_radius_on_dragging="10dp"
+                    app:bsb_bubble_text_size="17dp"
+                    app:bsb_thumb_radius_on_dragging="18dp"
                     app:bsb_always_show_bubble="true"
-                    app:bsb_thumb_radius="15dp" />
+                    app:bsb_thumb_radius="18dp" />
 
                 <TextView
                     android:id="@+id/txtMin"

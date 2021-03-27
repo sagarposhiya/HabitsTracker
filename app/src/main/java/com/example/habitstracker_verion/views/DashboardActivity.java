@@ -6,15 +6,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,9 +62,11 @@ import com.example.habitstracker_verion.utils.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 import com.hendraanggrian.recyclerview.widget.ExpandableRecyclerView;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -109,6 +116,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     // BottomSheetBehavior sheetBehavior;
     EntryListAdapter listAdapter;
     Track track;
+    String color;
     private DatabaseReference mDatabase;
 
     private BottomSheetBehavior<View> mBottomSheetBehavior;
@@ -131,6 +139,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
         ButterKnife.bind(this);
+        setAppTheme();
         getInit();
         addUnits();
         getTracks();
@@ -139,6 +148,13 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
        // findScrollingChild(rvEntries);
     }
 
+    private void setAppTheme() {
+        color = AppUtils.getStringPreference(this, Constants.themeColor);
+        toolbar.setBackgroundColor(Color.parseColor(color));
+        flotingAddEntry.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
+           // flotingAddEntry.setBackgroundColor(Color.parseColor(color));
+       // flotingAddEntry.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, Color.parseColor(color))));
+    }
     private void getInitBottomSheet() {
 
 //        mParent = (CoordinatorLayout) findViewById(R.id.parent_container);
@@ -155,11 +171,12 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 //        mLayoutManagerRight = new LinearLayoutManager(this);
 //        mBottomSheetRecyclerRight.setLayoutManager(mLayoutManagerRight);
 
-
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetView);
+        mBottomSheetBehavior.setHideable(false);
 
         mBottomSheetBehavior.setPeekHeight(150);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+       // mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -434,6 +451,10 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                 Intent intent1 = new Intent(DashboardActivity.this, ReminderActivity.class);
                 startActivity(intent1);
                 break;
+            case R.id.menuSettings:
+                Intent intent2 = new Intent(DashboardActivity.this, SettingActivity.class);
+                startActivity(intent2);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -471,6 +492,8 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
     @Override
     public void onBackPressed() {
+       // super.onBackPressed();
+       // finish();
         if (rlFullGraph.getVisibility() == View.VISIBLE) {
             if (bottom_sheet_layout.isExpended()) {
                 bottom_sheet_layout.collapse();
@@ -488,11 +511,15 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     @Override
     public void onChartClick(Track track) {
         this.track = track;
-        rlFullGraph.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-        flotingAddEntry.setVisibility(View.GONE);
-        txtTitle.setText(track.getName());
-        setTrackDetails(track,true);
+        Intent intent = new Intent(DashboardActivity.this,FullGraphActivity.class);
+        intent.putExtra(Constants.trackId,track.getId());
+        startActivity(intent);
+
+//        rlFullGraph.setVisibility(View.VISIBLE);
+//        recyclerView.setVisibility(View.GONE);
+//        flotingAddEntry.setVisibility(View.GONE);
+//        txtTitle.setText(track.getName());
+//        setTrackDetails(track,true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

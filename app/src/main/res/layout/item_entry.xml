@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
         android:elevation="3dp">
 
         <LinearLayout
-            android:padding="10dp"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -23,26 +22,29 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="7dp">
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/txtParamName"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:fontFamily="@font/poppins_regular"
                     android:text="Name"
                     android:textStyle="bold"
+                    android:gravity="center"
                     android:textColor="@color/black"
                     android:textSize="16dp" />
 
                 <TextView
                     android:id="@+id/txtAverage"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:text="Avg: 120.00 kg."
                     android:textColor="@color/black"
                     android:fontFamily="@font/poppins_regular"
-                    android:textSize="15dp"
+                    android:textSize="13dp"
+                    android:textStyle="italic"
+                    android:gravity="center"
                     android:layout_toRightOf="@id/txtParamName"
                     android:layout_marginLeft="15dp"/>
 

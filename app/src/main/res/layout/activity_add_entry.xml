@@ -10,6 +10,7 @@
     tools:context=".views.AddEntryActivity">
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary">
@@ -38,20 +39,41 @@
                 android:layout_toRightOf="@id/imgClose"
                 android:layout_marginLeft="10dp"/>
 
-            <ImageView
-                android:id="@+id/imgAdd"
-                android:layout_width="40dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_check"
-                android:padding="5dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"/>
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/imgReminder"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_reminder"
+                    android:padding="5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_toLeftOf="@id/imgAdd"
+                    android:layout_marginRight="10dp"/>
+
+                <ImageView
+                    android:id="@+id/imgAdd"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_check"
+                    android:padding="5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"/>
+
+            </LinearLayout>
+
+
 
         </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout
+    <RelativeLayout
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -104,6 +126,15 @@
             android:layout_height="wrap_content">
         </androidx.recyclerview.widget.RecyclerView>
 
-    </LinearLayout>
+
+        <Button
+            android:id="@+id/btnDone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            android:text="Done"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

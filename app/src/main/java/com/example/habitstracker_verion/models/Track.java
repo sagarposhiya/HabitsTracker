@@ -1,10 +1,12 @@
 package com.example.habitstracker_verion.models;
 
+import java.io.Serializable;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public  class Track extends RealmObject {
+public  class Track extends RealmObject{
     @PrimaryKey
     private int id;
     private String name;

@@ -3,19 +3,30 @@ package com.example.habitstracker_verion;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.habitstracker_verion.models.Alarm;
 import com.example.habitstracker_verion.models.Entry;
+import com.example.habitstracker_verion.models.FirebaseAlarm;
 import com.example.habitstracker_verion.models.FirebaseEntryParam;
 import com.example.habitstracker_verion.models.FirebaseParam;
 import com.example.habitstracker_verion.models.Track;
+import com.example.habitstracker_verion.receivers.AlarmReceiver;
 import com.example.habitstracker_verion.utils.AppUtils;
 import com.example.habitstracker_verion.utils.Constants;
+import com.example.habitstracker_verion.utils.DatabaseHelper;
+import com.example.habitstracker_verion.views.AddEditAlarmActivity;
 import com.example.habitstracker_verion.views.DashboardActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -36,11 +47,17 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
 
 public class LoginScreenActivity extends AppCompatActivity {
     private static final String TAG = "LoginScreenActivity";
+
+    @BindView(R.id.rlLoginBg)
+    RelativeLayout rlLoginBg;
+
     SignInButton signInButton;
     //    private GoogleApiClient googleApiClient;
     private GoogleSignInClient mSignInClient;
@@ -53,12 +70,27 @@ public class LoginScreenActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     ArrayList<FirebaseParam> paramArrayList = new ArrayList<>();
     Realm mRealm;
+    String color;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        color = AppUtils.getStringPreference(this,Constants.themeColor);
+        if (TextUtils.isEmpty(color)){
+            AppUtils.setStringPreference(this,Constants.themeColor,"#14748a");
+            color = "#14748a";
+        }
+        setAppTheme();
         getInit();
         launchHomeScreen();
+    }
+
+    private void setAppTheme() {
+        Drawable unwrappedDrawable = AppCompatResources.getDrawable(this, R.drawable.bg_login);
+        Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+        DrawableCompat.setTint(wrappedDrawable, Color.parseColor(color));
+        rlLoginBg.setBackground(unwrappedDrawable);
     }
 
     private void launchHomeScreen() {
@@ -130,6 +162,35 @@ public class LoginScreenActivity extends AppCompatActivity {
                 } else {
                     // Toast.makeText(LoginScreenActivity.this, "Error", Toast.LENGTH_SHORT).show();
                     //Log.e("FirebaseError",task.getException().getMessage());
+                }
+            }
+        });
+    }
+
+    private void getRemindersFromFirebase(String uid){
+
+        mDatabase.child("Reminders").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()){
+                    for (DataSnapshot snapshot : task.getResult().getChildren()){
+                        FirebaseAlarm firebaseAlarm = snapshot.getValue(FirebaseAlarm.class);
+                        final Alarm alarm = new Alarm();
+                        alarm.setIsEnabled(firebaseAlarm.isEnabled());
+                        alarm.setTime(firebaseAlarm.getTime());
+                        alarm.setLabel(firebaseAlarm.getLabel());
+                        alarm.setId(firebaseAlarm.getId());
+                        alarm.setDay(Alarm.MON, true);
+                        alarm.setDay(Alarm.TUES, true);
+                        alarm.setDay(Alarm.WED, true);
+                        alarm.setDay(Alarm.THURS, true);
+                        alarm.setDay(Alarm.FRI, true);
+                        alarm.setDay(Alarm.SAT, true);
+                        alarm.setDay(Alarm.SUN, true);
+
+                        DatabaseHelper.getInstance(LoginScreenActivity.this).addAlarm(alarm);
+                        AlarmReceiver.setReminderAlarm(LoginScreenActivity.this, alarm);
+                    }
                 }
             }
         });
@@ -216,6 +277,7 @@ public class LoginScreenActivity extends AppCompatActivity {
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
             getDataFromFirebase(result.getSignInAccount().getId());
+            getRemindersFromFirebase(result.getSignInAccount().getId());
             GoogleSignInAccount account = result.getSignInAccount();
             idToken = account.getIdToken();
             name = account.getDisplayName();

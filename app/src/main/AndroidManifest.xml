@@ -3,36 +3,42 @@
     package="com.example.habitstracker_verion">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.example.habitstracker_verion.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.HabitsTracker">
-        <activity android:name="com.example.habitstracker_verion.views.AddReminderActivity"
+        <activity android:name=".views.SettingActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
+
         <activity
-            android:name="com.example.habitstracker_verion.views.ReminderActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-        </activity>
-        <activity
-            android:name="com.example.habitstracker_verion.views.AddEntryActivity"
+            android:name=".views.FullGraphActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name="com.example.habitstracker_verion.views.AddTrackActivity"
+            android:name=".views.AddReminderActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name="com.example.habitstracker_verion.views.DashboardActivity"
+            android:name=".views.ReminderActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".views.AddEntryActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".views.AddTrackActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".views.DashboardActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.example.habitstracker_verion.LoginScreenActivity"
+            android:name=".LoginScreenActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,44 +46,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.example.habitstracker_verion.views.AddEditAlarmActivity"/>
-
-<!--        <receiver android:name=".receivers.AlarmReceiver" android:process=":remote">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.example.helloandroid.alarms" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
-
-
-<!--        <receiver-->
-<!--            android:name=".receivers.AlarmReceiver"-->
-<!--            android:directBootAware="true"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
-<!--        <service-->
-<!--            android:name=".receivers.MyService"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="false"-->
-<!--            android:process=":remote" />-->
-
-
-        <service android:name="com.example.habitstracker_verion.receivers.LoadAlarmsService" />
-
-<!--        <receiver android:name=".receivers.LoadAlarmsReceiver" />-->
-
-        <receiver android:name="com.example.habitstracker_verion.receivers.AlarmReceiver" />
-
-        <receiver android:name="com.example.habitstracker_verion.receivers.BootReceiver" android:enabled="true" android:exported="true">
+        <activity android:name=".views.AddEditAlarmActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/> <!-- <receiver android:name=".receivers.AlarmReceiver" android:process=":remote"> -->
+        <service android:name=".receivers.LoadAlarmsService" /> <!-- <receiver android:name=".receivers.LoadAlarmsReceiver" /> -->
+        <receiver android:name=".receivers.AlarmReceiver" />
+        <receiver
+            android:name=".receivers.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter android:priority="999">
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>

@@ -65,40 +65,61 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.View
         holder.imgClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Delete Entry");
-                builder.setMessage("Are you sure ?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Realm realm = null;
-                        try {
-                            realm = Realm.getDefaultInstance();
-                            realm.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    entries.remove(position);
-                                    notifyDataSetChanged();
-                                    entry.deleteFromRealm();
-                                    listner.onDeleteEntry();
-                                }
-                            });
 
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
+                Realm realm = null;
+                try {
+                    realm = Realm.getDefaultInstance();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            entries.remove(position);
+                            notifyDataSetChanged();
+                            entry.deleteFromRealm();
+                            listner.onDeleteEntry();
                         }
-                    }
-                });
+                    });
 
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                } finally {
+                    if (realm != null) {
+                        realm.close();
                     }
-                });
-                builder.show();
+                }
+
+
+//                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                builder.setTitle("Delete Entry");
+//                builder.setMessage("Are you sure ?");
+//                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Realm realm = null;
+//                        try {
+//                            realm = Realm.getDefaultInstance();
+//                            realm.executeTransaction(new Realm.Transaction() {
+//                                @Override
+//                                public void execute(Realm realm) {
+//                                    entries.remove(position);
+//                                    notifyDataSetChanged();
+//                                    entry.deleteFromRealm();
+//                                    listner.onDeleteEntry();
+//                                }
+//                            });
+//
+//                        } finally {
+//                            if (realm != null) {
+//                                realm.close();
+//                            }
+//                        }
+//                    }
+//                });
+//
+//                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                builder.show();
             }
         });
 

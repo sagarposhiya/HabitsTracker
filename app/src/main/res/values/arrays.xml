@@ -4,10 +4,10 @@
 
     <array name="unit_array">
         <item></item>
-        <item>Steps.</item>
-        <item>Miles.</item>
-        <item>Km.</item>
-        <item>Lbs.</item>
+        <item>Steps</item>
+        <item>Miles</item>
+        <item>Km</item>
+        <item>Lbs</item>
     </array>
 
     <string-array name="days_abbreviated">

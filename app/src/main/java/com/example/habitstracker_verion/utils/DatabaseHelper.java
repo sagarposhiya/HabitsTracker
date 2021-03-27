@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return addAlarm(new Alarm());
     }
 
-    long addAlarm(Alarm alarm) {
+   public long addAlarm(Alarm alarm) {
         return getWritableDatabase().insert(TABLE_NAME, null, AlarmUtils.toContentValues(alarm));
     }
 

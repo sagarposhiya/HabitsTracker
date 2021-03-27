@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Alarm;
 import com.example.habitstracker_verion.utils.AlarmUtils;
+import com.example.habitstracker_verion.views.AddEntryActivity;
 import com.example.habitstracker_verion.views.DashboardActivity;
 
 import java.util.Calendar;
@@ -61,7 +63,9 @@ public final class AlarmReceiver extends BroadcastReceiver {
         builder.setContentTitle(context.getString(R.string.app_name));
         builder.setContentText(alarm.getLabel());
         builder.setTicker(alarm.getLabel());
-        builder.setVibrate(new long[] {1000,500,1000,500,1000,500});
+        builder.setLights(Color.parseColor("#ffb400"), 50, 10);
+       // builder.setVibrate(new long[] {0L});  //1000,500,1000,500,1000,500
+        builder.setVibrate(new long[] {2000});
         builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         builder.setContentIntent(launchAlarmLandingPage(context, alarm));
         builder.setAutoCancel(true);
@@ -211,8 +215,9 @@ public final class AlarmReceiver extends BroadcastReceiver {
         if(mgr.getNotificationChannel(name) == null) {
             final NotificationChannel channel =
                     new NotificationChannel(CHANNEL_ID, name, IMPORTANCE_HIGH);
-            channel.enableVibration(true);
-            channel.setVibrationPattern(new long[] {1000,500,1000,500,1000,500});
+           // channel.enableVibration(false);
+           channel.setVibrationPattern(new long[] {1000,500,1000,500,1000,500});
+            //channel.setVibrationPattern(new long[] {500L});
             channel.setBypassDnd(true);
             mgr.createNotificationChannel(channel);
         }
@@ -225,7 +230,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
     }
 
     private static Intent launchIntent(Context ctx) {
-        final Intent i = new Intent(ctx, DashboardActivity.class);
+        final Intent i = new Intent(ctx, AddEntryActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return i;
     }

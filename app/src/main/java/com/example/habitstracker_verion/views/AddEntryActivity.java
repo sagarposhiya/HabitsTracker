@@ -2,11 +2,15 @@ package com.example.habitstracker_verion.views;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,6 +20,7 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +28,8 @@ import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.adapters.AddEntryAdapter;
 import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.Track;
+import com.example.habitstracker_verion.utils.AppUtils;
+import com.example.habitstracker_verion.utils.Constants;
 import com.google.firebase.FirebaseApp;
 import com.xw.repo.BubbleSeekBar;
 
@@ -51,6 +58,12 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
     ImageView imgClose;
     @BindView(R.id.txtToolbarTitle)
     TextView txtToolbarTitle;
+    @BindView(R.id.imgReminder)
+    ImageView imgReminder;
+    @BindView(R.id.btnDone)
+    Button btnDone;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     DatePickerDialog dpd;
     Realm mRealm;
     RealmResults<Track> tracks;
@@ -62,7 +75,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
     String formatted;
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
-
+    String color;
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +83,18 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_add_entry);
         FirebaseApp.initializeApp(this);
         ButterKnife.bind(this);
+        setAppTheme();
         getInit();
         setEvents();
         setCurrentDate();
         getTracks();
         setTrackAdapter();
+    }
+
+    private void setAppTheme() {
+        color = AppUtils.getStringPreference(this, Constants.themeColor);
+        toolbar.setBackgroundColor(Color.parseColor(color));
+        btnDone.setBackgroundColor(Color.parseColor(color));
     }
 
     private void setTrackAdapter() {
@@ -113,7 +133,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         nowSelected = Calendar.getInstance();
         //  now.set(year, month - 1, dayOfMonth, 0, 0);
         // SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd YYYY hh:mm");
+        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd YYYY  hh:mm");
         String formatted = format1.format(nowSelected.getTime());
         txtToolbarTitle.setText("" + formatted);
     }
@@ -133,6 +153,8 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         rvEntry.setLayoutManager(new LinearLayoutManager(this));
         txtToolbarTitle.setOnClickListener(this);
         imgAdd.setOnClickListener(this);
+        imgReminder.setOnClickListener(this);
+        btnDone.setOnClickListener(this);
         imgClose.setOnClickListener(this);
         dpd = new DatePickerDialog(AddEntryActivity.this);
         dpd.getDatePicker().setMaxDate(new Date().getTime());
@@ -150,6 +172,13 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.imgClose:
                 onBackPressed();
+                break;
+            case R.id.imgReminder:
+                Intent intent1 = new Intent(AddEntryActivity.this, ReminderActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.btnDone:
+                addEntries();
                 break;
         }
     }
@@ -255,7 +284,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         myMinute = minute;
         nowSelected = Calendar.getInstance();
         nowSelected.set(myYear, myMonth, myday, myHour, myMinute);
-        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd yyyy hh:mm");
+        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd yyyy  hh:mm");
         String formatted = format1.format(nowSelected.getTime());
         txtToolbarTitle.setText("" + formatted);
     }

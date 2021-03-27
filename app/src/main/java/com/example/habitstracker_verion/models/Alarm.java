@@ -6,6 +6,7 @@ import android.util.SparseBooleanArray;
 
 import androidx.annotation.IntDef;
 
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -45,6 +46,14 @@ public class Alarm implements Parcelable{
         parcel.writeByte((byte) (isEnabled ? 1 : 0));
     }
 
+    public String getuId() {
+        return uId;
+    }
+
+    public void setuId(String uId) {
+        this.uId = uId;
+    }
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({MON,TUES,WED,THURS,FRI,SAT,SUN})
     @interface Days{}
@@ -58,11 +67,12 @@ public class Alarm implements Parcelable{
 
     private static final long NO_ID = -1;
 
-    private final long id;
+    private long id;
     private long time;
     private String label;
     private SparseBooleanArray allDays;
     private boolean isEnabled;
+    private String uId;
 
     public Alarm() {
         this(NO_ID);
@@ -81,6 +91,10 @@ public class Alarm implements Parcelable{
         this.time = time;
         this.label = label;
         this.allDays = buildDaysArray(days);
+    }
+
+    public void setId(long id){
+        this.id = id;
     }
 
     public long getId() {
