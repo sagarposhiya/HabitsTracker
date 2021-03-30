@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -186,12 +187,14 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
     private void addEntries() {
         ArrayList<Track> added = addEntryAdapter.getTracksFromList();
         ArrayList<Track> newToAdd = new ArrayList<>();
+        boolean isChanged = false;
         for (int i = 0; i < added.size(); i++) {
             View view = rvEntry.getChildAt(i);
             EditText nameEditText = view.findViewById(R.id.mtfName);
             String name = nameEditText.getText().toString();
 
             if (!TextUtils.isEmpty(name)) {
+                isChanged = true;
                 final Entry[] entry = new Entry[1];
                 final Track[] track = new Track[1];
                 Realm realm = null;
@@ -229,7 +232,16 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                 entries.add(entry[0]);
                 realm.commitTransaction();
 //                }
+            } else {
+                isChanged = false;
             }
+        }
+
+        if (!isChanged){
+            Toast.makeText(this, "Please change value", Toast.LENGTH_SHORT).show();
+        } else {
+            finish();
+            finishAffinity();
         }
     }
 

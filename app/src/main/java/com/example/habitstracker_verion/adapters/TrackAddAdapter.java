@@ -51,9 +51,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
 
     @Override
     public void onRowMoved(int fromPosition, int toPosition) {
-        int tempstart = fromPosition;
-        int tempend = toPosition;
-        moveItem(tracks.get(fromPosition),fromPosition,toPosition);
+        moveItem(tracks.get(fromPosition), fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
     }
 
@@ -73,7 +71,10 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                 .findAll();
                         for (int i = 0; i < results.size(); i++) {
                             // results.get(i).index -= 1;
-                            results.get(i).setOrderPosition(results.get(i).getOrderPosition() - 2);
+                            int po = results.get(i).getOrderPosition();
+                            po -= 1;
+                            // results.get(i).setOrderPosition(results.get(i).getOrderPosition() - 1);
+                            results.get(i).setOrderPosition(po);
                         }
                     } else {
                         RealmResults<Track> results = realm.where(Track.class)
@@ -82,13 +83,17 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                 .findAll();
                         for (int i = 0; i < results.size(); i++) {
                             // results.get(i).index += 1;
-                            results.get(i).setOrderPosition(results.get(i).getOrderPosition() + 2);
+                            int po = results.get(i).getOrderPosition();
+                            po += 1;
+                            //results.get(i).setOrderPosition(results.get(i).getOrderPosition() + 1);
+                            results.get(i).setOrderPosition(po);
                         }
                     }
                     // item.index = toPosition;
                     item.setOrderPosition(toPosition);
                 }
             });
+
         } finally {
             if (realm != null) {
                 realm.close();
@@ -119,7 +124,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
         this.listener = listener;
     }
 
-    public ArrayList<Track> getList(){
+    public ArrayList<Track> getList() {
         return tracks;
     }
 
@@ -159,17 +164,18 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
         try {
             realm = Realm.getDefaultInstance();
             realm.executeTransaction(new Realm.Transaction() {
+
                 @Override
                 public void execute(Realm realm) {
                     track.setUnit(units.get(0));
-                    if (track.getColor() == ""){
+                    if (track.getColor() == "") {
                         track.setColor("#14748a");
                     }
-                    Log.e("Selected Unit :- ", units.get(0) + " " );
+                    Log.e("Selected Unit :- ", units.get(0) + " ");
                 }
             });
 
-            Realm finalRealm = realm ;
+            Realm finalRealm = realm;
 //            Realm finalRealm = Realm.getDefaultInstance();
             holder.spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -220,14 +226,15 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                     ColorPickerDialogBuilder
                             .with(context)
                             .setTitle("Choose color")
-                           // .initialColor(currentBackgroundColor)
+                            // .initialColor(currentBackgroundColor)
                             .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                           // .noSliders()
+                            // .noSliders()
                             .showAlphaSlider(false)
                             .setOnColorSelectedListener(new OnColorSelectedListener() {
+
                                 @Override
                                 public void onColorSelected(int selectedColor) {
-                                 //   toast("onColorSelected: 0x" + Integer.toHexString(selectedColor));
+                                    //   toast("onColorSelected: 0x" + Integer.toHexString(selectedColor));
                                 }
                             })
                             .setPositiveButton("ok", new ColorPickerClickListener() {
@@ -235,7 +242,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                 public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
                                     //changeBackgroundColor(selectedColor);
                                     String hexColor = String.format("#%06X", (0xFFFFFF & selectedColor));
-                                   // holder.imgColor.setBackgroundColor(Color.parseColor(hexColor));
+                                    // holder.imgColor.setBackgroundColor(Color.parseColor(hexColor));
                                     holder.imgColor.setColorFilter(Color.parseColor(hexColor));
 
                                     finalRealm1.executeTransaction(new Realm.Transaction() {
@@ -270,12 +277,14 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                             builder.setTitle(context.getString(R.string.txtMsgDeleteEntry));
                             builder.setMessage("Are you sure ?");
                             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Realm realm = null;
                                     try {
                                         realm = Realm.getDefaultInstance();
                                         realm.executeTransaction(new Realm.Transaction() {
+
                                             @Override
                                             public void execute(Realm realm) {
                                                 tracks.remove(position);
@@ -285,31 +294,32 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
 
                                                 Track exTrack = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
                                                 if (exTrack != null) {
-                                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                                                String userId = AppUtils.getStringPreference(context, Constants.UserId);
-                                                Query applesQuery = ref.child("Tracks").child(userId).orderByChild("trackId").equalTo(track.getId() + "");
+                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                                                    String userId = AppUtils.getStringPreference(context, Constants.UserId);
+                                                    Query applesQuery = ref.child("Tracks").child(userId).orderByChild("trackId").equalTo(track.getId() + "");
 
-                                                applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                        for (DataSnapshot appleSnapshot : snapshot.getChildren()) {
-                                                            appleSnapshot.getRef().removeValue();
+                                                    applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            for (DataSnapshot appleSnapshot : snapshot.getChildren()) {
+                                                                appleSnapshot.getRef().removeValue();
 
-                                                            realm.executeTransaction(new Realm.Transaction() {
-                                                                @Override
-                                                                public void execute(Realm realm) {
-                                                                    exTrack.deleteFromRealm();
-                                                                }
-                                                            });
+                                                                realm.executeTransaction(new Realm.Transaction() {
+
+                                                                    @Override
+                                                                    public void execute(Realm realm) {
+                                                                        exTrack.deleteFromRealm();
+                                                                    }
+                                                                });
+                                                            }
                                                         }
-                                                    }
 
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                                    }
-                                                });
-                                            }
+                                                        }
+                                                    });
+                                                }
                                             }
                                         });
 

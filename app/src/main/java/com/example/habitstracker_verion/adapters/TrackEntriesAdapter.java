@@ -180,6 +180,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         //xAxis.setCenterAxisLabels(true);
         xAxis.setDrawLabels(false);
         xAxis.setDrawLimitLinesBehindData(true);
+        xAxis.setDrawAxisLine(false);
 
         LimitLine ll1 = new LimitLine(Float.parseFloat("02220"), "");
         if (track.getColor() == null){
@@ -289,7 +290,8 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
             volumeReportChart.setDrawGridBackground(false);
             volumeReportChart.getAxisLeft().setDrawGridLines(false);
             volumeReportChart.getXAxis().setDrawGridLines(false);
-
+            volumeReportChart.getLegend().setEnabled(false);
+            //volumeReportChart.setLogEnabled(false);
           //  volumeReportChart.getAxisLeft().setAxisMaxValue(amounts.get(amounts.size() - 1).floatValue() + 10);
             //volumeReportChart.getXAxis().setAxisMaximum(dates.get(dates.size() - 1).floatValue() + 10);
 

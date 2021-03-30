@@ -408,6 +408,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                 public void execute(Realm realm) {
                     try {
                         boolean isUnitAdded = AppUtils.getBooleanPreference(DashboardActivity.this, Constants.isUnitAdded);
+
                         if (!isUnitAdded) {
                             for (int i = 0; i < unitsArray.length; i++) {
                                 Unit unit = realm.createObject(Unit.class);
@@ -416,6 +417,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                                 unit.setDeletable(false);
                                 realm.copyFromRealm(unit);
                             }
+
                             AppUtils.setBooleanPreference(DashboardActivity.this, Constants.isUnitAdded, true);
                         }
 
@@ -622,7 +624,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         volumeReportChart.getDescription().setPosition(0f, 0f);
         volumeReportChart.setDescription(description);
         volumeReportChart.getAxisRight().setEnabled(false);
-
+        volumeReportChart.getLegend().setEnabled(false);
         setDataForWeeksWise(allAmounts, volumeReportChart, dates);
     }
 
@@ -681,6 +683,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
             volumeReportChart.getAxisLeft().setDrawGridLines(true);
             volumeReportChart.getXAxis().setDrawGridLines(true);
             volumeReportChart.setPinchZoom(true);
+            volumeReportChart.getLegend().setEnabled(false);
             volumeReportChart.setData(data);
         }
     }

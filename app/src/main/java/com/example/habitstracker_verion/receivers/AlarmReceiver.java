@@ -63,28 +63,15 @@ public final class AlarmReceiver extends BroadcastReceiver {
         builder.setContentTitle(context.getString(R.string.app_name));
         builder.setContentText(alarm.getLabel());
         builder.setTicker(alarm.getLabel());
-        builder.setLights(Color.parseColor("#ffb400"), 50, 10);
-       // builder.setVibrate(new long[] {0L});  //1000,500,1000,500,1000,500
-        builder.setVibrate(new long[] {2000});
+       // builder.setVibrate(new long[] {1000,500,1000,500,1000,500});  //1000,500,1000,500,1000,500
+        //builder.setVibrate(new long[] {500,1000});
         builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         builder.setContentIntent(launchAlarmLandingPage(context, alarm));
         builder.setAutoCancel(true);
+      //  builder.setOnlyAlertOnce(true);
         builder.setPriority(Notification.PRIORITY_HIGH);
 
         manager.notify(id, builder.build());
-
-
-//        // Phone ringing
-//        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-//        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-//        r.play();
-//
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                r.stop();
-//            }
-//        },5000);
 
         //Reset Alarm manually
         setReminderAlarm(context, alarm);
@@ -155,7 +142,6 @@ public final class AlarmReceiver extends BroadcastReceiver {
         } while(!isAlarmSetForDay && count < 7);
 
         return calendar;
-
     }
 
     public static void cancelReminderAlarm(Context context, Alarm alarm) {
@@ -215,9 +201,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
         if(mgr.getNotificationChannel(name) == null) {
             final NotificationChannel channel =
                     new NotificationChannel(CHANNEL_ID, name, IMPORTANCE_HIGH);
-           // channel.enableVibration(false);
-           channel.setVibrationPattern(new long[] {1000,500,1000,500,1000,500});
-            //channel.setVibrationPattern(new long[] {500L});
+            channel.enableVibration(false);
             channel.setBypassDnd(true);
             mgr.createNotificationChannel(channel);
         }
@@ -263,6 +247,5 @@ public final class AlarmReceiver extends BroadcastReceiver {
                 am.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), pi);
             }
         }
-
     }
 }
