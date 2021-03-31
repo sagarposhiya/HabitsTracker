@@ -6,21 +6,22 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="@color/white"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="7dp">
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:cardBackgroundColor="@color/white"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginTop="7dp">-->
 
         <LinearLayout
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="7dp">
 
             <TextView
                 android:id="@+id/txtTrackName"
@@ -45,6 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:minHeight="50dp"
+                    android:scrollbarThumbHorizontal="@drawable/ic_check"
                     app:bsb_max="10"
                     app:bsb_min="0"
                     app:bsb_second_track_size="4dp"
@@ -52,7 +54,9 @@
                     app:bsb_bubble_text_size="20dp"
                     app:bsb_thumb_radius_on_dragging="18dp"
                     app:bsb_always_show_bubble="true"
-                    app:bsb_thumb_radius="18dp" />
+                    app:bsb_thumb_radius="18dp"
+                    app:bsb_seek_by_section="true"
+                    app:bsb_touch_to_seek="true"/>
 
                 <TextView
                     android:id="@+id/txtMin"
@@ -122,7 +126,7 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+<!--    </androidx.cardview.widget.CardView>-->
 
     <TextView
         android:visibility="visible"

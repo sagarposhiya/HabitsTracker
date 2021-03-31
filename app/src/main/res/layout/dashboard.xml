@@ -161,8 +161,8 @@
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:visibility="gone">
+                            android:layout_weight="1"
+                            android:visibility="gone">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/btm_recyclerview_right"

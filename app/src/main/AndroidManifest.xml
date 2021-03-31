@@ -29,12 +29,16 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".views.AddEntryActivity"
+            android:autoRemoveFromRecents="true"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".views.AddTrackActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".views.DashboardActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity

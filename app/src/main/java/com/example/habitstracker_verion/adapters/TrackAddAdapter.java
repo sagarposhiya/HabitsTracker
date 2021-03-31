@@ -24,6 +24,7 @@ import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.utils.AppUtils;
 import com.example.habitstracker_verion.utils.Constants;
 import com.example.habitstracker_verion.utils.ItemMoveCallback;
+import com.example.habitstracker_verion.views.AddTrackActivity;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -48,6 +49,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
     ArrayList<Track> tracks;
     onSavedListener listener;
     ArrayList<String> units;
+    AddTrackActivity addTrackActivity = new AddTrackActivity();
 
     @Override
     public void onRowMoved(int fromPosition, int toPosition) {
@@ -81,6 +83,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                 .greaterThanOrEqualTo("orderPosition", toPosition)
                                 .lessThan("orderPosition", fromPosition)
                                 .findAll();
+
                         for (int i = 0; i < results.size(); i++) {
                             // results.get(i).index += 1;
                             int po = results.get(i).getOrderPosition();
@@ -114,7 +117,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
     }
 
     public interface onSavedListener {
-        void onSavedClick();
+        void onDeleteTrack(Track track, int position);
     }
 
     public TrackAddAdapter(Activity context, ArrayList<Track> tracks, ArrayList<String> units, onSavedListener listener) {
@@ -143,8 +146,12 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                     R.layout.item_unit, R.id.title, units);
 
             holder.spinnerUnit.setAdapter(unitAdapter);
+
+           // holder.edTrackName.setText("");
         } else {
-            holder.edTrackName.setText(track.getName());
+           // if (!track.isNew()) {
+                holder.edTrackName.setText(track.getName());
+           // }
 
             UnitAdapter unitAdapter = new UnitAdapter(context,
                     R.layout.item_unit, R.id.title, units);
@@ -178,6 +185,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
             Realm finalRealm = realm;
 //            Realm finalRealm = Realm.getDefaultInstance();
             holder.spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     finalRealm.executeTransaction(new Realm.Transaction() {
@@ -235,7 +243,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                 @Override
                                 public void onColorSelected(int selectedColor) {
                                     //   toast("onColorSelected: 0x" + Integer.toHexString(selectedColor));
-                                }
+                                 }
                             })
                             .setPositiveButton("ok", new ColorPickerClickListener() {
                                 @Override
@@ -273,73 +281,84 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                     finalRealm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setTitle(context.getString(R.string.txtMsgDeleteEntry));
-                            builder.setMessage("Are you sure ?");
-                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Realm realm = null;
-                                    try {
-                                        realm = Realm.getDefaultInstance();
-                                        realm.executeTransaction(new Realm.Transaction() {
+                            if (track.isNew()){
+                                tracks.remove(position);
+                                notifyItemChanged(position);
+                                notifyItemRangeChanged(position, tracks.size());
+                            } else {
 
-                                            @Override
-                                            public void execute(Realm realm) {
-                                                tracks.remove(position);
-                                                notifyItemChanged(position);
-                                                notifyItemRangeChanged(position, tracks.size());
-                                                track.setEdited(true);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle(context.getString(R.string.txtMsgDeleteEntry));
+                                builder.setMessage("Are you sure ?");
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-                                                Track exTrack = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
-                                                if (exTrack != null) {
-                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                                                    String userId = AppUtils.getStringPreference(context, Constants.UserId);
-                                                    Query applesQuery = ref.child("Tracks").child(userId).orderByChild("trackId").equalTo(track.getId() + "");
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Realm realm = null;
+                                        try {
+                                            realm = Realm.getDefaultInstance();
+                                            realm.executeTransaction(new Realm.Transaction() {
 
-                                                    applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            for (DataSnapshot appleSnapshot : snapshot.getChildren()) {
-                                                                appleSnapshot.getRef().removeValue();
+                                                @Override
+                                                public void execute(Realm realm) {
+                                                    tracks.remove(position);
+                                                    notifyItemChanged(position);
+                                                    notifyItemRangeChanged(position, tracks.size());
+                                                    track.setEdited(true);
 
-                                                                realm.executeTransaction(new Realm.Transaction() {
+                                                    Track exTrack = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
+                                                    if (exTrack != null) {
+                                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                                                        String userId = AppUtils.getStringPreference(context, Constants.UserId);
+                                                        Query applesQuery = ref.child("Tracks").child(userId).orderByChild("trackId").equalTo(track.getId() + "");
 
-                                                                    @Override
-                                                                    public void execute(Realm realm) {
-                                                                        exTrack.deleteFromRealm();
-                                                                    }
-                                                                });
+                                                        applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                for (DataSnapshot appleSnapshot : snapshot.getChildren()) {
+                                                                    appleSnapshot.getRef().removeValue();
+
+                                                                    realm.executeTransaction(new Realm.Transaction() {
+
+                                                                        @Override
+                                                                        public void execute(Realm realm) {
+                                                                            listener.onDeleteTrack(track,position);
+                                                                            exTrack.deleteFromRealm();
+
+                                                                            // addTrackActivity.lstTracks.remove(position);
+                                                                        }
+                                                                    });
+                                                                }
                                                             }
-                                                        }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
+                                                            }
+                                                        });
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
 
-                                    } finally {
-                                        if (realm != null) {
-                                            realm.close();
+                                        } finally {
+                                            if (realm != null) {
+                                                realm.close();
 //                                            finalRealm.close();
 //                                            finalRealm1.close();
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
 
-                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.show();
+                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.show();
+                            }
                         }
                     });
                 }
@@ -352,12 +371,16 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
         }
     }
 
+    public ArrayList<Track> getLstTracks(){
+        return tracks;
+    }
+
     public ArrayList<Track> getTracksFromList() {
         return tracks;
     }
 
     public void updateList(ArrayList<Track> results) {
-        //this.tracks.clear();
+      //  this.tracks.clear();
         this.tracks = results;
         notifyDataSetChanged();
     }

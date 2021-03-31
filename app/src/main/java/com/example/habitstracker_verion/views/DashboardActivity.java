@@ -139,6 +139,15 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("exit")) {
+            // finish immediately
+            finish();
+            finishAffinity();
+            return;
+        }
+
         setAppTheme();
         getInit();
         addUnits();
@@ -413,7 +422,9 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                             for (int i = 0; i < unitsArray.length; i++) {
                                 Unit unit = realm.createObject(Unit.class);
                                 // Unit unit = new Unit();
-                                unit.setName(unitsArray[i]);
+                               String strUnit = unitsArray[i];
+                               strUnit = strUnit.replace(".", "");
+                                unit.setName(strUnit);
                                 unit.setDeletable(false);
                                 realm.copyFromRealm(unit);
                             }

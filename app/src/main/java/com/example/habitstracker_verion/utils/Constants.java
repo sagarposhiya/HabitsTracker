@@ -10,4 +10,6 @@ public class Constants {
     public static final String isUnitAdded = "isUnitAdded";
     public static final String trackId = "trackId";
     public static final String themeColor = "themeColor";
+    public static final String ADD = "ADD";
+    public static final String SHOW = "SHOW";
 }

@@ -215,7 +215,6 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                             entry[0].setParamName(track[0].getName());
                             entry[0].setDate(nowSelected.getTime().getTime());
                             entry[0].setValue(Double.parseDouble(name));
-
                         }
                     });
 
@@ -225,7 +224,6 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                         onBackPressed();
                     }
                 }
-
 //                if (track[0].isValueChanged()) {
                 realm.beginTransaction();
                 RealmList<Entry> entries = track[0].getEntries();
@@ -238,10 +236,17 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         }
 
         if (!isChanged){
-            Toast.makeText(this, "Please change value", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Please change value", Toast.LENGTH_SHORT).show();
         } else {
-            finish();
-            finishAffinity();
+//            finish();
+//            finishAffinity();
+
+            Intent clearIntent = new Intent(this, DashboardActivity.class);
+            clearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            clearIntent.putExtra("exit", true);
+            startActivity(clearIntent);
         }
     }
 

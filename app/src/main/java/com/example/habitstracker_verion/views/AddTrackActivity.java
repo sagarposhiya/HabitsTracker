@@ -61,6 +61,7 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     TrackAddAdapter trackAddAdapter;
     NewTrackAdapter newTrackAdapter;
     String color;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,18 +71,18 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
         setAppTheme();
         getInit();
         getUnits();
-        getTracks();
+        getTracks(Constants.SHOW);
         setAdapter();
     }
 
     private void setAppTheme() {
         color = AppUtils.getStringPreference(this, Constants.themeColor);
         toolbar.setBackgroundColor(Color.parseColor(color));
-      //  btnDone.setBackgroundColor(Color.parseColor(color));
+        //  btnDone.setBackgroundColor(Color.parseColor(color));
     }
 
     private void setAdapter() {
-        trackAddAdapter = new TrackAddAdapter(this,lstTracks,lstUnits,this);
+        trackAddAdapter = new TrackAddAdapter(this, lstTracks, lstUnits, this);
         rvTracks.setAdapter(trackAddAdapter);
         rvTracks.setItemViewCacheSize(lstTracks.size());
         ItemTouchHelper.Callback callback =
@@ -90,18 +91,18 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
         touchHelper.attachToRecyclerView(rvTracks);
         ArrayList<Track> trackArrayList = trackAddAdapter.getList();
         for (int i = 0; i < trackArrayList.size(); i++) {
-            Log.e("TRACKS",trackArrayList.get(i).getName());
+           // Log.e("TRACKS", trackArrayList.get(i).getName());
         }
     }
 
-    private void getTracks() {
+    private void getTracks(String add) {
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 tracks = realm.where(Track.class).sort("orderPosition", Sort.ASCENDING).findAll();
                 lstTracks.addAll(tracks);
-                }
-            });
+            }
+        });
     }
 
     private void getInit() {
@@ -115,7 +116,7 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
         imgClose.setOnClickListener(this);
     }
 
-    private void getUnits(){
+    private void getUnits() {
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -123,7 +124,7 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         lstUnits = new ArrayList<>();
-        if (units.size() > 0){
+        if (units.size() > 0) {
             for (int i = 0; i < units.size(); i++) {
                 lstUnits.add(units.get(i).getName());
             }
@@ -132,7 +133,7 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.llAddNewParam:
                 addNewParam();
                 break;
@@ -170,7 +171,7 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
         progressDialog.show();
         ArrayList<Track> added = trackAddAdapter.getTracksFromList();
         ArrayList<Track> newToAdd = new ArrayList<>();
-        for (int i = 0; i <added.size() ; i++) {
+        for (int i = 0; i < added.size(); i++) {
             View view = rvTracks.getChildAt(i);
             EditText nameEditText = (EditText) view.findViewById(R.id.edTrackName);
             String name = nameEditText.getText().toString();
@@ -182,8 +183,8 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        if (!checkIfExists(added.get(finalI).getId()) || added.get(finalI).isNew()){ // || added.get(finalI).isEdited()
-                            Track track = realm.createObject(Track.class,getNextKey());
+                        if (!checkIfExists(added.get(finalI).getId()) || added.get(finalI).isNew()) { // || added.get(finalI).isEdited()
+                            Track track = realm.createObject(Track.class, getNextKey());
                             track.setOrderPosition(getNextKey());
                             track.setName(name);
                             track.setUnit(added.get(finalI).getUnit());
@@ -205,13 +206,14 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
 //        Log.e("Tracks",newToAdd.get(0).getName());
     }
 
-    public boolean checkIfExists(int id){
+    public boolean checkIfExists(int id) {
 
         RealmQuery<Track> query = mRealm.where(Track.class)
                 .equalTo("id", id);
 
         return query.count() != 0;
     }
+
 
     public int getNextKey() {
         try {
@@ -227,21 +229,28 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void addNewParam() {
+       // lstTracks.clear();
+//        getTracks(Constants.ADD);
+        lstTracks = trackAddAdapter.getLstTracks();
         Track track = new Track();
         track.setNew(true);
         lstTracks.add(track);
-        trackAddAdapter.updateList(lstTracks);
-        rvTracks.setItemViewCacheSize(lstTracks.size());
+        setAdapter();
+//        trackAddAdapter.updateList(lstTracks);
+//        rvTracks.setItemViewCacheSize(lstTracks.size());
     }
 
     @Override
-    public void onSavedClick() {
-
+    public void onDeleteTrack(Track track, int position) {
+//        if (position - 1 >= 0) {
+//            lstTracks.remove(position - 1);
+//        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();;
+        mRealm.close();
+        ;
     }
 }
