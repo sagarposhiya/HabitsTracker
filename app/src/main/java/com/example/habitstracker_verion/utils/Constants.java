@@ -12,4 +12,6 @@ public class Constants {
     public static final String themeColor = "themeColor";
     public static final String ADD = "ADD";
     public static final String SHOW = "SHOW";
+    public static final String NOTIFICATION = "NOTIFICATION";
+    public static final String PLUS_BUTTON = "PLUS_BUTTON";
 }

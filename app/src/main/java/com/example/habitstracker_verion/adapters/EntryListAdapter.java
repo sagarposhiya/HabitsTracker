@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Entry;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +61,8 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.View
         Date timeMilliseconds = new Date(emissionsMilliSince1970Time);
 
         holder.txtDate.setText(format.format(timeMilliseconds));
-        holder.txtValue.setText(String.valueOf(entry.getValue()));
+       // holder.txtValue.setText(String.valueOf(entry.getValue()));
+        holder.txtValue.setText(String.valueOf(new DecimalFormat("#").format(entry.getValue())));
 
         holder.imgClose.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -21,6 +21,7 @@ import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.utils.AppUtils;
+import com.example.habitstracker_verion.utils.DecimalValueFormatter;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -52,11 +53,11 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
     ArrayList<Track> list;
     onChartClickListener listener;
 
-    public interface onChartClickListener{
+    public interface onChartClickListener {
         void onChartClick(Track track);
     }
 
-    public TrackEntriesAdapter(Context context, Activity activity,ArrayList<Track> list,onChartClickListener listener) {
+    public TrackEntriesAdapter(Context context, Activity activity, ArrayList<Track> list, onChartClickListener listener) {
         this.context = context;
         this.list = list;
         this.activity = activity;
@@ -81,7 +82,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         holder.txtAverage.setText(track.getAverageUnit());
         holder.txtIncrease.setText(track.getIncrement());
         holder.txtParamName.setText(track.getName());
-        holder.txtUnit.setText(track.getUnit());
+        holder.txtUnit.setText(track.getUnit().replace(".",""));
         //        holder.txtEntries.setText(track.getEntries().size());
 
         holder.txtEntries.setText(track.getEntries().size() + " entries");
@@ -89,7 +90,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (track.getEntries().size() == 0){
+                if (track.getEntries().size() == 0) {
                     Toast.makeText(context, "No Found Entries", Toast.LENGTH_SHORT).show();
                 } else {
                     listener.onChartClick(track);
@@ -138,30 +139,30 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         } else {
             holder.txtNoData.setVisibility(View.GONE);
             holder.lineChart.setVisibility(View.VISIBLE);
-            renderData(dates, values, holder.lineChart,track);
+            renderData(dates, values, holder.lineChart, track);
 
             //Set Avarage
             double sum = 0;
-            for (int i = 0; i < track.getEntries().size() ; i++) {
-               Entry entry = track.getEntries().get(i);
+            for (int i = 0; i < track.getEntries().size(); i++) {
+                Entry entry = track.getEntries().get(i);
                 sum = sum + entry.getValue();
             }
 
-            sum = sum/track.getEntries().size();
+            sum = sum / track.getEntries().size();
 
-            holder.txtAverage.setText("(Avg: " + new DecimalFormat("##.##").format(sum)+")");
+            holder.txtAverage.setText("(Avg: " + new DecimalFormat("##.##").format(sum) + ")");
 
             //set Increment/Decrement
 
-            if (track.getEntries().size() == 1){
+            if (track.getEntries().size() == 1) {
                 holder.txtIncrease.setText("+" + track.getEntries().get(0).getValue() + " " + track.getUnit());
             } else {
-                Entry entry1 =  track.getEntries().get(track.getEntries().size() - 1);
-                Entry entry2 =  track.getEntries().get(track.getEntries().size() - 2);
+                Entry entry1 = track.getEntries().get(track.getEntries().size() - 1);
+                Entry entry2 = track.getEntries().get(track.getEntries().size() - 2);
 
                 double value = entry1.getValue() - entry2.getValue();
 
-                if (value > 0){
+                if (value > 0) {
                     holder.txtIncrease.setText("+" + new DecimalFormat("##.##").format(value) + " " + track.getUnit());
                 } else {
                     holder.txtIncrease.setText("    " + new DecimalFormat("##.##").format(value) + " " + track.getUnit());
@@ -183,7 +184,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         xAxis.setDrawAxisLine(false);
 
         LimitLine ll1 = new LimitLine(Float.parseFloat("02220"), "");
-        if (track.getColor() == null){
+        if (track.getColor() == null) {
             ll1.setLineColor(context.getColor(R.color.colorPrimary));
         } else {
             ll1.setLineColor(Color.parseColor(track.getColor()));
@@ -202,7 +203,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         ll2.setLineColor(Color.parseColor("#FFFFFF"));
 
         xAxis.removeAllLimitLines();
-       // xAxis.addLimitLine(ll1);
+        // xAxis.addLimitLine(ll1);
 
         YAxis leftAxis = volumeReportChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
@@ -223,7 +224,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         volumeReportChart.setDescription(description);
         volumeReportChart.getAxisRight().setEnabled(false);
 
-        setDataForWeeksWise(allAmounts, volumeReportChart, dates,track);
+        setDataForWeeksWise(allAmounts, volumeReportChart, dates, track);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -242,22 +243,23 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
             set1.setValues(values);
             volumeReportChart.getData().notifyDataChanged();
             volumeReportChart.notifyDataSetChanged();
+            set1.setValueFormatter(new DecimalValueFormatter());
         } else {
-            set1 = new LineDataSet(values,"");
+            set1 = new LineDataSet(values, "");
             set1.setDrawCircles(true);
             set1.setLineWidth(2.5f);//line size
             set1.setCircleRadius(5f);
             set1.setDrawCircleHole(false);
             set1.setValueTextSize(10f);
             set1.setDrawFilled(true);
-
-          //  set1.setFillDrawable(ContextCompat.getDrawable(context, R.drawable.gradient));
+            set1.setValueFormatter(new DecimalValueFormatter());
+            //  set1.setFillDrawable(ContextCompat.getDrawable(context, R.drawable.gradient));
 
             if (Utils.getSDKInt() >= 18) {
 //                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.gradient);
 //                set1.setFillDrawable(drawable);
 
-                if (track.getColor() != null){
+                if (track.getColor() != null) {
                     Drawable unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.gradient);
                     Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
                     DrawableCompat.setTint(wrappedDrawable, Color.parseColor(track.getColor()));
@@ -292,7 +294,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
             volumeReportChart.getXAxis().setDrawGridLines(false);
             volumeReportChart.getLegend().setEnabled(false);
             //volumeReportChart.setLogEnabled(false);
-          //  volumeReportChart.getAxisLeft().setAxisMaxValue(amounts.get(amounts.size() - 1).floatValue() + 10);
+            //  volumeReportChart.getAxisLeft().setAxisMaxValue(amounts.get(amounts.size() - 1).floatValue() + 10);
             //volumeReportChart.getXAxis().setAxisMaximum(dates.get(dates.size() - 1).floatValue() + 10);
 
             volumeReportChart.setData(data);

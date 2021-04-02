@@ -361,41 +361,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
         mBottomSheetView.setVisibility(View.GONE);
 
-//        bottom_sheet_layout.setNestedScrollingEnabled(true);
-
-
-
-//        mParent = (CoordinatorLayout) findViewById(R.id.parent_container);
-//        mParent.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-//
-//        mBottomSheetView = findViewById(R.id.main_bottomsheet);
-//
-//
-//        mBottomSheetRecyclerLeft = (RecyclerView) findViewById(R.id.btm_recyclerview_left);
-//        mLayoutManagerLeft = new LinearLayoutManager(this);
-//        mBottomSheetRecyclerLeft.setLayoutManager(mLayoutManagerLeft);
-//
-//        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetView);
-//
-//        mBottomSheetBehavior.setPeekHeight(150);
-//        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//
-//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(View bottomSheet, int newState) {
-//                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-//                    //  mBottomSheetBehavior.setPeekHeight(0);
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(View bottomSheet, float slideOffset) {
-//            }
-//        });
-//
-//        BottomSheetBehaviorRecyclerManager manager = new BottomSheetBehaviorRecyclerManager(mParent, (ICustomBottomSheetBehavior) mBottomSheetBehavior, mBottomSheetView);
-//        manager.addControl(mBottomSheetRecyclerLeft);
-//        manager.create();
     }
 
     @Override
@@ -483,6 +448,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         switch (v.getId()) {
             case R.id.flotingAddEntry:
                 Intent intent = new Intent(DashboardActivity.this, AddEntryActivity.class);
+                intent.setAction(Constants.PLUS_BUTTON);
                 startActivity(intent);
                 break;
             case R.id.llBottomSheet:

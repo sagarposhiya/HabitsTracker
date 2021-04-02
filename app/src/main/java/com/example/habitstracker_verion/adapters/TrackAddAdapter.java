@@ -278,89 +278,105 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
             holder.imgClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finalRealm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
 
-                            if (track.isNew()){
-                                tracks.remove(position);
-                                notifyItemChanged(position);
-                                notifyItemRangeChanged(position, tracks.size());
-                            } else {
+                    Realm realm = null;
+                    try {
+                        realm = Realm.getDefaultInstance();
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                if (track.isNew()){
+                                    tracks.remove(position);
+                                    notifyItemChanged(position);
+                                    notifyItemRangeChanged(position, tracks.size());
+                                } else {
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle(context.getString(R.string.txtMsgDeleteEntry));
-                                builder.setMessage("Are you sure ?");
-                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle(context.getString(R.string.txtMsgDeleteEntry));
+                                    builder.setMessage("Are you sure ?");
+                                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Realm realm = null;
-                                        try {
-                                            realm = Realm.getDefaultInstance();
-                                            realm.executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Realm realm = null;
+                                            try {
+                                                realm = Realm.getDefaultInstance();
+                                                realm.executeTransaction(new Realm.Transaction() {
 
-                                                @Override
-                                                public void execute(Realm realm) {
-                                                    tracks.remove(position);
-                                                    notifyItemChanged(position);
-                                                    notifyItemRangeChanged(position, tracks.size());
-                                                    track.setEdited(true);
+                                                    @Override
+                                                    public void execute(Realm realm) {
+                                                        tracks.remove(position);
+                                                        notifyItemChanged(position);
+                                                        notifyItemRangeChanged(position, tracks.size());
+                                                        track.setEdited(true);
 
-                                                    Track exTrack = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
-                                                    if (exTrack != null) {
-                                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                                                        String userId = AppUtils.getStringPreference(context, Constants.UserId);
-                                                        Query applesQuery = ref.child("Tracks").child(userId).orderByChild("trackId").equalTo(track.getId() + "");
+                                                        Track exTrack = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
+                                                        if (exTrack != null) {
+                                                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                                                            String userId = AppUtils.getStringPreference(context, Constants.UserId);
+                                                            Query applesQuery = ref.child("Tracks").child(userId).orderByChild("trackId").equalTo(track.getId() + "");
 
-                                                        applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                for (DataSnapshot appleSnapshot : snapshot.getChildren()) {
-                                                                    appleSnapshot.getRef().removeValue();
+                                                            applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    for (DataSnapshot appleSnapshot : snapshot.getChildren()) {
+                                                                        appleSnapshot.getRef().removeValue();
 
-                                                                    realm.executeTransaction(new Realm.Transaction() {
+                                                                        realm.executeTransaction(new Realm.Transaction() {
 
-                                                                        @Override
-                                                                        public void execute(Realm realm) {
-                                                                            listener.onDeleteTrack(track,position);
-                                                                            exTrack.deleteFromRealm();
+                                                                            @Override
+                                                                            public void execute(Realm realm) {
+                                                                                listener.onDeleteTrack(track,position);
+                                                                                exTrack.deleteFromRealm();
 
-                                                                            // addTrackActivity.lstTracks.remove(position);
-                                                                        }
-                                                                    });
+                                                                                // addTrackActivity.lstTracks.remove(position);
+                                                                            }
+                                                                        });
+                                                                    }
                                                                 }
-                                                            }
 
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                                            }
-                                                        });
+                                                                }
+                                                            });
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
 
-                                        } finally {
-                                            if (realm != null) {
-                                                realm.close();
+                                            } finally {
+                                                if (realm != null) {
+                                                    realm.close();
 //                                            finalRealm.close();
 //                                            finalRealm1.close();
+                                                }
                                             }
                                         }
-                                    }
-                                });
+                                    });
 
-                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.show();
+                                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                }
                             }
+                        });
+                    } finally {
+                        if (realm != null) {
+                            realm.close();
                         }
-                    });
+                    }
+
+//                    finalRealm.executeTransaction(new Realm.Transaction() {
+//                        @Override
+//                        public void execute(Realm realm) {
+//
+//
+//                        }
+//                    });
                 }
             });
 

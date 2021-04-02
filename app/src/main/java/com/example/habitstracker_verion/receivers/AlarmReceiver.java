@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Alarm;
 import com.example.habitstracker_verion.utils.AlarmUtils;
+import com.example.habitstracker_verion.utils.Constants;
 import com.example.habitstracker_verion.views.AddEntryActivity;
 import com.example.habitstracker_verion.views.DashboardActivity;
 
@@ -216,6 +217,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
     private static Intent launchIntent(Context ctx) {
         final Intent i = new Intent(ctx, AddEntryActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setAction(Constants.NOTIFICATION);
         return i;
     }
 

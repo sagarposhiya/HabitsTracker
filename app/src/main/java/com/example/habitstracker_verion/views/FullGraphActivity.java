@@ -31,6 +31,7 @@ import com.example.habitstracker_verion.utils.BottomSheetBehavior;
 import com.example.habitstracker_verion.utils.BottomSheetBehaviorRecyclerManager;
 import com.example.habitstracker_verion.utils.ClaimsXAxisValueFormatter;
 import com.example.habitstracker_verion.utils.Constants;
+import com.example.habitstracker_verion.utils.DecimalValueFormatter;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -287,6 +288,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
             set1.setValues(values);
             volumeReportChart.getData().notifyDataChanged();
             volumeReportChart.notifyDataSetChanged();
+            set1.setValueFormatter(new DecimalValueFormatter());
         } else {
             set1 = new LineDataSet(values, "");
             set1.setDrawCircles(true);
@@ -295,6 +297,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
             set1.setDrawCircleHole(true);
             set1.setValueTextSize(10f);
             set1.setDrawFilled(true);
+            set1.setValueFormatter(new DecimalValueFormatter());
 
             if (Utils.getSDKInt() >= 18) {
                 if (track.getColor() != null){

@@ -71,6 +71,7 @@ public class LoginScreenActivity extends AppCompatActivity {
     ArrayList<FirebaseParam> paramArrayList = new ArrayList<>();
     Realm mRealm;
     String color;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,25 +109,6 @@ public class LoginScreenActivity extends AppCompatActivity {
         mRealm = Realm.getDefaultInstance();
         firebaseAuth = com.google.firebase.auth.FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-//        authStateListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                // Get signedIn user
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                //  getDataFromFirebase(user.getUid());
-//                //if user is signed in, we call a helper method to save the user details to Firebase
-//                if (user != null) {
-//                    // User is signed in
-//                    // you could place other firebase code
-//                    //logic to save the user details to Firebase
-//                    Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    Log.e(TAG, "onAuthStateChanged:signed_out");
-//                }
-//            }
-//        };
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))

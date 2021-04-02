@@ -152,7 +152,7 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
                     Reminder reminder = realm.createObject(Reminder.class, getNextKey());
                     reminder.setStrDate(strDate);
                     reminder.setStrTime(strTime);
-                    reminder.setDate(date);         
+                    reminder.setDate(date);
                     reminder.setTime(time);
                     reminder.setTitle(title);
 

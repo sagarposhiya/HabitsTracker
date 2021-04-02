@@ -77,6 +77,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
     String color;
+    String action;
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_add_entry);
         FirebaseApp.initializeApp(this);
         ButterKnife.bind(this);
+        action = getIntent().getAction();
         setAppTheme();
         getInit();
         setEvents();
@@ -221,7 +223,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                 } finally {
                     if (realm != null) {
                         realm.close();
-                        onBackPressed();
+                       // onBackPressed();
                     }
                 }
 //                if (track[0].isValueChanged()) {
@@ -240,13 +242,18 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         } else {
 //            finish();
 //            finishAffinity();
-
-            Intent clearIntent = new Intent(this, DashboardActivity.class);
-            clearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            clearIntent.putExtra("exit", true);
-            startActivity(clearIntent);
+            Toast.makeText(this, "Saved Entries", Toast.LENGTH_SHORT).show();
+            if (action.equalsIgnoreCase(Constants.NOTIFICATION)) {
+                Toast.makeText(this, "Saved Entries", Toast.LENGTH_SHORT).show();
+                Intent clearIntent = new Intent(this, DashboardActivity.class);
+                clearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                clearIntent.putExtra("exit", true);
+                startActivity(clearIntent);
+            } else if (action.equalsIgnoreCase(Constants.PLUS_BUTTON)){
+                onBackPressed();
+            }
         }
     }
 

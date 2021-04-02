@@ -35,7 +35,7 @@ public class UnitAdapter extends ArrayAdapter<String> {
 
         TextView txtTitle = (TextView) rowview.findViewById(R.id.title);
        // txtTitle.setText( unit.replaceAll("."," "));
-        unit = unit.replace(".", "");
+      //  unit = unit.replace(".", "");
         txtTitle.setText(unit);
         ImageView imageView = (ImageView) rowview.findViewById(R.id.icon);
         //imageView.setImageResource(unit.getImageId());
