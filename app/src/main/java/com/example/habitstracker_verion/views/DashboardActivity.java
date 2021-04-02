@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.adapters.EntryListAdapter;
 import com.example.habitstracker_verion.adapters.TrackEntriesAdapter;
+import com.example.habitstracker_verion.database.DatabaseClient;
 import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.FirebaseEntryParam;
 import com.example.habitstracker_verion.models.FirebaseParam;
@@ -201,10 +203,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         });
 
         mBottomSheetRecyclerLeft.setAdapter(listAdapter);
-
-//        mAdapterLeft.update(modelsLeft);
-//        mAdapterRight.update(modelsRight);
-
         //helper to rule scrolls
         BottomSheetBehaviorRecyclerManager manager = new BottomSheetBehaviorRecyclerManager(mParent, mBottomSheetBehavior, mBottomSheetView);
         manager.addControl(mBottomSheetRecyclerLeft);
@@ -225,73 +223,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
     private void setEvents() {
 
-//        rvEntries.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                v.getParent().requestDisallowInterceptTouchEvent(true);
-//                v.onTouchEvent(event);
-//                return true;
-//            }
-//        });
-
-//        rvEntries.setOnTouchListener(new RecyclerView.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                int action = event.getAction();
-//                switch (action) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        // Disallow NestedScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(true);
-//                        break;
-//
-//                    case MotionEvent.ACTION_UP:
-//                        // Allow NestedScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(false);
-//                        break;
-//                }
-//
-//                // Handle RecyclerView touch events.
-//                v.onTouchEvent(event);
-//                return true;
-//            }
-//        });
-
-//        tracks.addChangeListener(new RealmChangeListener<RealmResults<Track>>() {
-//            @Override
-//            public void onChange(RealmResults<Track> results) {
-//                lstTracks = new ArrayList<>();
-//                lstTracks.addAll(results);
-//                addinFirebase(tracks);
-//                setTrackAdapter();
-//            }
-//        });
-
-//        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//                switch (newState) {
-//                    case BottomSheetBehavior.STATE_HIDDEN:
-//                        break;
-//                    case BottomSheetBehavior.STATE_EXPANDED: {
-//                        //btnBottomSheet.setText("Close Sheet");
-//                    }
-//                    break;
-//                    case BottomSheetBehavior.STATE_COLLAPSED: {
-//                        //  btnBottomSheet.setText("Expand Sheet");
-//                    }
-//                    break;
-//                    case BottomSheetBehavior.STATE_DRAGGING:
-//                        break;
-//                    case BottomSheetBehavior.STATE_SETTLING:
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//            }
-//        });
     }
 
     private void setTrackAdapter() {
@@ -304,17 +235,42 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     }
 
     private void getTracks() {
-        mRealm.executeTransaction(new Realm.Transaction() {
+//        mRealm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                tracks = realm.where(Track.class).sort("orderPosition", Sort.ASCENDING).findAll();
+//                lstTracks.addAll(tracks);
+//                addinFirebase(tracks);
+//            }
+//        });
+
+        class GetTasks extends AsyncTask<Void, Void, List<Track>> {
+
             @Override
-            public void execute(Realm realm) {
-                tracks = realm.where(Track.class).sort("orderPosition", Sort.ASCENDING).findAll();
-                lstTracks.addAll(tracks);
-                addinFirebase(tracks);
+            protected List<Track> doInBackground(Void... voids) {
+                List<Track> taskList = DatabaseClient
+                        .getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .trackDao()
+                        .getAll();
+                return taskList;
             }
-        });
+
+            @Override
+            protected void onPostExecute(List<Track> tasks) {
+                super.onPostExecute(tasks);
+                lstTracks.addAll(tasks);
+                addinFirebase(tasks);
+//                TasksAdapter adapter = new TasksAdapter(MainActivity.this, tasks);
+//                recyclerView.setAdapter(adapter);
+            }
+        }
+
+        GetTasks gt = new GetTasks();
+        gt.execute();
     }
 
-    private void addinFirebase(RealmResults<Track> tracks) {
+    private void addinFirebase(List<Track> tracks) {
         for (int i = 0; i < tracks.size(); i++) {
             Log.e("ORDER", tracks.get(i).getName() + "  " + tracks.get(i).getOrderPosition() + "");
             ArrayList<FirebaseEntryParam> entryParams = new ArrayList<>();
@@ -361,41 +317,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
         mBottomSheetView.setVisibility(View.GONE);
 
-//        bottom_sheet_layout.setNestedScrollingEnabled(true);
-
-
-
-//        mParent = (CoordinatorLayout) findViewById(R.id.parent_container);
-//        mParent.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-//
-//        mBottomSheetView = findViewById(R.id.main_bottomsheet);
-//
-//
-//        mBottomSheetRecyclerLeft = (RecyclerView) findViewById(R.id.btm_recyclerview_left);
-//        mLayoutManagerLeft = new LinearLayoutManager(this);
-//        mBottomSheetRecyclerLeft.setLayoutManager(mLayoutManagerLeft);
-//
-//        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetView);
-//
-//        mBottomSheetBehavior.setPeekHeight(150);
-//        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//
-//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(View bottomSheet, int newState) {
-//                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-//                    //  mBottomSheetBehavior.setPeekHeight(0);
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(View bottomSheet, float slideOffset) {
-//            }
-//        });
-//
-//        BottomSheetBehaviorRecyclerManager manager = new BottomSheetBehaviorRecyclerManager(mParent, (ICustomBottomSheetBehavior) mBottomSheetBehavior, mBottomSheetView);
-//        manager.addControl(mBottomSheetRecyclerLeft);
-//        manager.create();
     }
 
     @Override
@@ -538,7 +459,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setTrackDetails(Track track,boolean isSort) {
         List<Long> dates = new ArrayList<>();
-        List<Double> values = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
         ArrayList<Entry> entries = new ArrayList<>();
         entries.addAll(track.getEntries());
         Collections.reverse(entries);
@@ -589,7 +510,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void renderData(List<Long> dates, List<Double> allAmounts, LineChart volumeReportChart) {
+    public void renderData(List<Long> dates, List<Integer> allAmounts, LineChart volumeReportChart) {
 
         XAxis xAxis = volumeReportChart.getXAxis();
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
@@ -640,7 +561,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void setDataForWeeksWise(List<Double> amounts, LineChart volumeReportChart, List<Long> dates) {
+    private void setDataForWeeksWise(List<Integer> amounts, LineChart volumeReportChart, List<Long> dates) {
 
         ArrayList<com.github.mikephil.charting.data.Entry> values = new ArrayList<>();
         for (int i = 0; i < amounts.size(); i++) {

@@ -1,16 +1,36 @@
 package com.example.habitstracker_verion.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import io.realm.RealmObject;
+
+@Entity
 public class Entry extends RealmObject {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
+
+    @ColumnInfo(name = "date")
     private long date;
+
+    @ColumnInfo(name = "paramDate")
     private String paramDate;
+
+    @ColumnInfo(name = "paramName")
     private String paramName;
-    private double value;
+
+    @ColumnInfo(name = "value")
+    private int value;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public long getDate() {
         return date;
@@ -36,11 +56,11 @@ public class Entry extends RealmObject {
         this.paramName = paramName;
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

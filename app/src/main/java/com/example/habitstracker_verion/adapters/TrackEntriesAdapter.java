@@ -21,6 +21,8 @@ import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.utils.AppUtils;
+import com.example.habitstracker_verion.utils.ClaimsXAxisValueFormatter;
+import com.example.habitstracker_verion.utils.DecimalValueFormatter;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -98,7 +100,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         });
 
         List<Long> dates = new ArrayList<>();
-        List<Double> values = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
 
         for (int i = 0; i < track.getEntries().size(); i++) {
             Entry entry = track.getEntries().get(i);
@@ -171,7 +173,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void renderData(List<Long> dates, List<Double> allAmounts, LineChart volumeReportChart, Track track) {
+    public void renderData(List<Long> dates, List<Integer> allAmounts, LineChart volumeReportChart, Track track) {
 
         XAxis xAxis = volumeReportChart.getXAxis();
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
@@ -208,12 +210,12 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(ll1);
         leftAxis.addLimitLine(ll2);
-
         leftAxis.setAxisMinimum(0f);
         leftAxis.enableGridDashedLine(0f, 0f, 0f);
         leftAxis.setDrawZeroLine(false);
         leftAxis.setDrawLimitLinesBehindData(false);
         leftAxis.setDrawLabels(false);
+
 
         volumeReportChart.getDescription().setEnabled(false);
         Description description = new Description();
@@ -227,19 +229,22 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void setDataForWeeksWise(List<Double> amounts, LineChart volumeReportChart, List<Long> dates, Track track) {
+    private void setDataForWeeksWise(List<Integer> amounts, LineChart volumeReportChart, List<Long> dates, Track track) {
 
         ArrayList<com.github.mikephil.charting.data.Entry> values = new ArrayList<>();
         for (int i = 0; i < amounts.size(); i++) {
             //values.add(new Entry(i, amounts.get(i).floatValue()));
-            values.add(new com.github.mikephil.charting.data.Entry(Float.parseFloat(String.valueOf(dates.get(i))), amounts.get(i).floatValue()));
+            //int a = 10;
+            values.add(new com.github.mikephil.charting.data.Entry(Float.parseFloat(String.valueOf(dates.get(i))), amounts.get(i)));//amounts.get(i).floatValue())
         }
 
         LineDataSet set1;
+       // set1.setValueFormatter(new DecimalValueFormatter());
         if (volumeReportChart.getData() != null &&
                 volumeReportChart.getData().getDataSetCount() > 0) {
             set1 = (LineDataSet) volumeReportChart.getData().getDataSetByIndex(0);
             set1.setValues(values);
+            set1.setValueFormatter(new DecimalValueFormatter());
             volumeReportChart.getData().notifyDataChanged();
             volumeReportChart.notifyDataSetChanged();
         } else {
@@ -250,6 +255,7 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
             set1.setDrawCircleHole(false);
             set1.setValueTextSize(10f);
             set1.setDrawFilled(true);
+            set1.setValueFormatter(new DecimalValueFormatter());
 
           //  set1.setFillDrawable(ContextCompat.getDrawable(context, R.drawable.gradient));
 
@@ -291,6 +297,15 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
             volumeReportChart.getAxisLeft().setDrawGridLines(false);
             volumeReportChart.getXAxis().setDrawGridLines(false);
             volumeReportChart.getLegend().setEnabled(false);
+
+//            YAxisValueFormatter customYaxisFormatter = new YAxisValueFormatter() {
+//                @Override
+//                public String getFormattedValue(float value, YAxis yAxis) {
+//                    return String.valueOf((int)value);
+//                }
+//            };
+//            volumeReportChart.getAxisLeft().setValueFormatter(customYaxisFormatter);
+
             //volumeReportChart.setLogEnabled(false);
           //  volumeReportChart.getAxisLeft().setAxisMaxValue(amounts.get(amounts.size() - 1).floatValue() + 10);
             //volumeReportChart.getXAxis().setAxisMaximum(dates.get(dates.size() - 1).floatValue() + 10);

@@ -31,6 +31,7 @@ import com.example.habitstracker_verion.utils.BottomSheetBehavior;
 import com.example.habitstracker_verion.utils.BottomSheetBehaviorRecyclerManager;
 import com.example.habitstracker_verion.utils.ClaimsXAxisValueFormatter;
 import com.example.habitstracker_verion.utils.Constants;
+import com.example.habitstracker_verion.utils.DecimalValueFormatter;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -108,15 +109,15 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
     }
 
     private void getTrack() {
-        mRealm.executeTransaction(new Realm.Transaction() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void execute(Realm realm) {
-                track = realm.where(Track.class).equalTo("id",trackId).findFirst();
-                txtTitle.setText(track.getName());
-                setTrackDetails(track,false);
-            }
-        });
+//        mRealm.executeTransaction(new Realm.Transaction() {
+//            @RequiresApi(api = Build.VERSION_CODES.M)
+//            @Override
+//            public void execute(Realm realm) {
+//                track = realm.where(Track.class).equalTo("id",trackId).findFirst();
+//                txtTitle.setText(track.getName());
+//                setTrackDetails(track,false);
+//            }
+//        });
     }
 
     private void getInitBottomSheet() {
@@ -167,7 +168,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setTrackDetails(Track track, boolean isSort) {
         List<Long> dates = new ArrayList<>();
-        List<Double> values = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
         ArrayList<Entry> entries = new ArrayList<>();
         entries.addAll(track.getEntries());
         Collections.reverse(entries);
@@ -221,7 +222,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void renderData(List<Long> dates, List<Double> allAmounts, LineChart volumeReportChart) {
+    public void renderData(List<Long> dates, List<Integer> allAmounts, LineChart volumeReportChart) {
 
         XAxis xAxis = volumeReportChart.getXAxis();
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
@@ -272,7 +273,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void setDataForWeeksWise(List<Double> amounts, LineChart volumeReportChart, List<Long> dates) {
+    private void setDataForWeeksWise(List<Integer> amounts, LineChart volumeReportChart, List<Long> dates) {
 
         ArrayList<com.github.mikephil.charting.data.Entry> values = new ArrayList<>();
         for (int i = 0; i < amounts.size(); i++) {
@@ -285,6 +286,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
                 volumeReportChart.getData().getDataSetCount() > 0) {
             set1 = (LineDataSet) volumeReportChart.getData().getDataSetByIndex(0);
             set1.setValues(values);
+            set1.setValueFormatter(new DecimalValueFormatter());
             volumeReportChart.getData().notifyDataChanged();
             volumeReportChart.notifyDataSetChanged();
         } else {
@@ -295,6 +297,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
             set1.setDrawCircleHole(true);
             set1.setValueTextSize(10f);
             set1.setDrawFilled(true);
+            set1.setValueFormatter(new DecimalValueFormatter());
 
             if (Utils.getSDKInt() >= 18) {
                 if (track.getColor() != null){

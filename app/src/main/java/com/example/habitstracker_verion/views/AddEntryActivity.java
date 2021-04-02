@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -209,12 +210,12 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                                     .equalTo("id", added.get(finalI1).getId())
                                     .findFirst();
 
-                            RealmList<Entry> entries = track[0].getEntries();
+                            List<Entry> entries = track[0].getEntries();
 
                             entry[0] = realm.createObject(Entry.class, getNextKey());
                             entry[0].setParamName(track[0].getName());
                             entry[0].setDate(nowSelected.getTime().getTime());
-                            entry[0].setValue(Double.parseDouble(name));
+                            entry[0].setValue(Integer.parseInt(name));
                         }
                     });
 
@@ -226,7 +227,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                 }
 //                if (track[0].isValueChanged()) {
                 realm.beginTransaction();
-                RealmList<Entry> entries = track[0].getEntries();
+                List<Entry> entries = track[0].getEntries();
                 entries.add(entry[0]);
                 realm.commitTransaction();
 //                }

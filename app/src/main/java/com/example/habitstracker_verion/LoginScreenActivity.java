@@ -9,6 +9,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.habitstracker_verion.database.DatabaseClient;
 import com.example.habitstracker_verion.models.Alarm;
 import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.FirebaseAlarm;
@@ -46,6 +48,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -197,46 +200,96 @@ public class LoginScreenActivity extends AppCompatActivity {
     }
 
     private void addInDatabase(ArrayList<FirebaseParam> paramArrayList) {
-        Realm realm = null;
+//        Realm realm = null;
+//        try {
+//            realm = Realm.getDefaultInstance();
+//            realm.executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    for (int i = 0; i < paramArrayList.size(); i++) {
+//                        //realm.beginTransaction();
+//                        ArrayList<Entry> entries = new ArrayList<>();
+//                        FirebaseParam param = paramArrayList.get(i);
+//                        for (int j = 0; j < param.getEntries().size(); j++) {
+//                            FirebaseEntryParam firebaseEntryParam = param.getEntries().get(j);
+//                            Entry entry = realm.createObject(Entry.class, getNextEntryKey());
+//                            //Entry entry = new Entry();
+//                            entry.setValue(firebaseEntryParam.getValue());
+//                            entry.setDate(firebaseEntryParam.getDate());
+//                            entries.add(entry);
+//                        }
+//
+//                        Track track = realm.createObject(Track.class, getNextKey());
+//                        //Track track = new Track();
+//                        track.setName(param.getName());
+//                        track.setUnit(param.getUnit());
+//                        track.setEntries(entries);
+//                        track.setColor(param.getColor());
+//                        realm.insert(track);
+//                        //   realm.commitTransaction();
+//                    }
+//
+//                  //  Toast.makeText(LoginScreenActivity.this, "Data added " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        } catch (Exception e) {
+//            Log.e(TAG, "Exception :- " + e.getMessage());
+//        } finally {
+//            if (realm != null) {
+//                realm.close();
+//            }
+//        }
 
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    for (int i = 0; i < paramArrayList.size(); i++) {
+        class SaveTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                //creating a task
+
+                List<Track> tracks = new ArrayList<>();
+                for (int i = 0; i < paramArrayList.size(); i++) {
                         //realm.beginTransaction();
-                        RealmList<Entry> entries = new RealmList<>();
+                        ArrayList<Entry> entries = new ArrayList<>();
                         FirebaseParam param = paramArrayList.get(i);
                         for (int j = 0; j < param.getEntries().size(); j++) {
                             FirebaseEntryParam firebaseEntryParam = param.getEntries().get(j);
-                            Entry entry = realm.createObject(Entry.class, getNextEntryKey());
-                            //Entry entry = new Entry();
+                           // Entry entry = realm.createObject(Entry.class, getNextEntryKey());
+                            Entry entry = new Entry();
                             entry.setValue(firebaseEntryParam.getValue());
                             entry.setDate(firebaseEntryParam.getDate());
                             entries.add(entry);
                         }
 
-                        Track track = realm.createObject(Track.class, getNextKey());
-                        //Track track = new Track();
+                       // Track track = realm.createObject(Track.class, getNextKey());
+                        Track track = new Track();
                         track.setName(param.getName());
                         track.setUnit(param.getUnit());
                         track.setEntries(entries);
                         track.setColor(param.getColor());
-                        realm.insert(track);
+                        tracks.add(track);
+                      //  realm.insert(track);
                         //   realm.commitTransaction();
                     }
 
-                  //  Toast.makeText(LoginScreenActivity.this, "Data added " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Exception :- " + e.getMessage());
-        } finally {
-            if (realm != null) {
-                realm.close();
+                //adding to database
+                DatabaseClient.getInstance(getApplicationContext()).getAppDatabase()
+                        .trackDao()
+                        .insertAllTracks(tracks);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                finish();
+               // startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
             }
         }
+
+        SaveTask st = new SaveTask();
+        st.execute();
     }
 
     public int getNextKey() {

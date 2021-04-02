@@ -152,7 +152,7 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
                     Reminder reminder = realm.createObject(Reminder.class, getNextKey());
                     reminder.setStrDate(strDate);
                     reminder.setStrTime(strTime);
-                    reminder.setDate(date);         
+                    reminder.setDate(date);
                     reminder.setTime(time);
                     reminder.setTitle(title);
 
@@ -181,9 +181,7 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
                     // }
                 }
             });
-
         }
-
     }
 
     private void startAlarm() {
@@ -195,8 +193,6 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
         }
-
-
     }
 
     private void setDate() {
@@ -273,7 +269,6 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
     protected void onDestroy() {
         super.onDestroy();
         mRealm.close();
-        ;
     }
 
     @Override

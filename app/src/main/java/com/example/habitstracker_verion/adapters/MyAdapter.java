@@ -77,7 +77,7 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
         holder.txtEntries.setText(track.getEntries().size() + " entries");
 
         List<String> dates = new ArrayList<>();
-        List<Double> values = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
 
         for (int i = 0; i < track.getEntries().size(); i++) {
             Entry entry = track.getEntries().get(i);
@@ -151,7 +151,7 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
         }
     }
 
-    public void renderData(List<String> dates, List<Double> allAmounts, LineChart volumeReportChart) {
+    public void renderData(List<String> dates, List<Integer> allAmounts, LineChart volumeReportChart) {
 
 //        final ArrayList<String> xAxisLabel = new ArrayList<>();
 //        xAxisLabel.add("1");
@@ -223,7 +223,7 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
 
     }
 
-    private void setDataForWeeksWise(List<Double> amounts, LineChart volumeReportChart, List<String> dates) {
+    private void setDataForWeeksWise(List<Integer> amounts, LineChart volumeReportChart, List<String> dates) {
 
         ArrayList<com.github.mikephil.charting.data.Entry> values = new ArrayList<>();
         for (int i = 0; i < amounts.size(); i++) {

@@ -3,7 +3,7 @@ package com.example.habitstracker_verion.models;
 public class FirebaseEntryParam {
 
    private  long date;
-   private double value;
+   private int value;
 
     public long getDate() {
         return date;
@@ -13,11 +13,11 @@ public class FirebaseEntryParam {
         this.date = date;
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(int value) {
         this.value = value;
     }
 }
