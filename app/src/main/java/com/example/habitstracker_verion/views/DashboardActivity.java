@@ -491,6 +491,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                 startActivity(intent1);
                 break;
             case R.id.menuSettings:
+                mRealm.close();
                 Intent intent2 = new Intent(DashboardActivity.this, SettingActivity.class);
                 startActivity(intent2);
                 break;
@@ -522,6 +523,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     @Override
     protected void onResume() {
         super.onResume();
+        mRealm = RealmManager.getInstance();
     }
 
     @Override
@@ -742,6 +744,8 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     @Override
     protected void onPause() {
         super.onPause();
-        mRealm.close();
+     //   mRealm.close();
     }
+
+
 }
