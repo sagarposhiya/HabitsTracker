@@ -32,6 +32,7 @@ import com.example.habitstracker_verion.utils.BottomSheetBehaviorRecyclerManager
 import com.example.habitstracker_verion.utils.ClaimsXAxisValueFormatter;
 import com.example.habitstracker_verion.utils.Constants;
 import com.example.habitstracker_verion.utils.DecimalValueFormatter;
+import com.example.habitstracker_verion.utils.RealmManager;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -94,7 +95,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
     }
 
     private void getInit() {
-        mRealm = Realm.getDefaultInstance();
+        mRealm = RealmManager.getInstance();
         trackId = getIntent().getIntExtra(Constants.trackId,000);
         getTrack();
         txtTitle.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +173,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
         ArrayList<Entry> entries = new ArrayList<>();
         entries.addAll(track.getEntries());
         Collections.reverse(entries);
-
+        mRealm = Realm.getDefaultInstance();
         listAdapter = new EntryListAdapter(this,entries, track.getEntries(), this);
         mBottomSheetRecyclerLeft = (RecyclerView) findViewById(R.id.btm_recyclerview_left);
         mLayoutManagerLeft = new LinearLayoutManager(this);
@@ -189,7 +190,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
         if (isSort) {
             Realm realm = null;
             try {
-                realm = Realm.getDefaultInstance();
+                realm = RealmManager.getInstance();
 //            if (realm.isInTransaction()){
 //                realm.commitTransaction();
 //            }
@@ -212,9 +213,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
                     }
                 });
             } finally {
-                if (realm != null) {
-                    realm.close();
-                }
+               RealmManager.closeInstance();
             }
         }
 
@@ -344,5 +343,17 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
     protected void onDestroy() {
         super.onDestroy();
         mRealm.close();
+       RealmManager.closeInstance();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+       // mRealm.close();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

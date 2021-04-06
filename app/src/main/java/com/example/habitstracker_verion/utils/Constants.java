@@ -14,4 +14,5 @@ public class Constants {
     public static final String SHOW = "SHOW";
     public static final String NOTIFICATION = "NOTIFICATION";
     public static final String PLUS_BUTTON = "PLUS_BUTTON";
+    public static final String DB_UPDATED = "DB_UPDATED";
 }

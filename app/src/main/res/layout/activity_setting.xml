@@ -1,68 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".views.SettingActivity">
 
-     <androidx.appcompat.widget.Toolbar
-         android:id="@+id/toolbar"
-         android:layout_width="match_parent"
-         android:layout_height="?attr/actionBarSize"
-         android:background="@color/colorPrimary">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
 
-         <LinearLayout
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-             <TextView
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:text="Settings"
-                 android:gravity="center_vertical"
-                 android:layout_marginLeft="10dp"
-                 android:textSize="18dp"
-                 android:textColor="@color/white"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="Settings"
+                android:textColor="@color/white"
+                android:textSize="18dp" />
 
-         </LinearLayout>
+        </LinearLayout>
 
-     </androidx.appcompat.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
-     <Button
-         android:id="@+id/btnChooseColor"
-         android:layout_marginTop="80dp"
-         android:layout_width="match_parent"
-         android:layout_height="50dp"
-         android:layout_marginLeft="100dp"
-         android:layout_marginRight="100dp"
-         android:text="Choose color"
-         android:textAllCaps="false"
-         android:fontFamily="@font/poppins_regular"
-         android:textSize="17dp"
-         android:background="@drawable/bg_button"/>
 
     <TextView
-
-        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selected Color"
         android:layout_marginLeft="20dp"
-        android:textStyle="bold"
-        android:textSize="18dp"/>
+        android:layout_marginTop="10dp"
+        android:text="Set color"
+        android:textColor="@color/black"
+        android:textSize="17dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/black" />
+
+    <Button
+        android:id="@+id/btnChooseColor"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/bg_button"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Choose color"
+        android:textAllCaps="false"
+        android:textSize="17dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Database Information"
+        android:textColor="@color/black"
+        android:textSize="17dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="0.7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name :- "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_weight="0.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Firebase Realtime Database"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="0.7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="URL :- "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_weight="0.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="https://progress-tracker-78a3e-default-rtdb.firebaseio.com/"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="0.7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Last Updated :- "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/txtUpdate"
+                android:layout_weight="0.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="0.7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="User Id :- "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/txtUserId"
+                android:layout_weight="0.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Id"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtTitleLog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Logout"
+        android:textColor="@color/black"
+        android:textSize="17dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/black" />
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/bg_button"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Logout"
+        android:textAllCaps="false"
+        android:textSize="17dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Clear Data"
+        android:textColor="@color/black"
+        android:textSize="17dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/black" />
+
+    <Button
+        android:id="@+id/btnClear"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/bg_button"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Clear"
+        android:textAllCaps="false"
+        android:textSize="17dp" />
 
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/txtSelectedColor"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@color/colorPrimary"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorPrimary"
+        android:visibility="gone" />
 
 </LinearLayout>

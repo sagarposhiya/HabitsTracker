@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,6 +19,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habitstracker_verion.R;
@@ -24,7 +27,13 @@ import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.utils.AppUtils;
 import com.example.habitstracker_verion.utils.Constants;
 import com.example.habitstracker_verion.utils.ItemMoveCallback;
+import com.example.habitstracker_verion.utils.RealmManager;
+import com.example.habitstracker_verion.utils.recyclercallbacks.ItemTouchHelperAdapter;
+import com.example.habitstracker_verion.utils.recyclercallbacks.ItemTouchHelperViewHolder;
+import com.example.habitstracker_verion.utils.recyclercallbacks.OnCustomerListChangedListener;
+import com.example.habitstracker_verion.utils.recyclercallbacks.OnStartDragListener;
 import com.example.habitstracker_verion.views.AddTrackActivity;
+import com.example.habitstracker_verion.views.DashboardActivity;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -37,94 +46,48 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHolder> implements ItemMoveCallback.ItemTouchHelperContract {
+public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
     Activity context;
-    ArrayList<Track> tracks;
+    static ArrayList<Track> tracks;
     onSavedListener listener;
     ArrayList<String> units;
     AddTrackActivity addTrackActivity = new AddTrackActivity();
+    private OnStartDragListener mDragStartListener;
+    private OnCustomerListChangedListener mListChangedListener;
 
     @Override
-    public void onRowMoved(int fromPosition, int toPosition) {
-        moveItem(tracks.get(fromPosition), fromPosition, toPosition);
+    public void onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(tracks, fromPosition, toPosition);
+        mListChangedListener.onNoteListChanged(tracks);
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public void moveItem(Track item, final int fromPosition, final int toPosition) {
-        final int index = item.getOrderPosition();
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    Track item = realm.where(Track.class).equalTo("orderPosition", index).findFirst();
-                    if (fromPosition < toPosition) {
-                        RealmResults<Track> results = realm.where(Track.class)
-                                .greaterThan("orderPosition", fromPosition)
-                                .lessThanOrEqualTo("orderPosition", toPosition)
-                                .findAll();
-                        for (int i = 0; i < results.size(); i++) {
-                            // results.get(i).index -= 1;
-                            int po = results.get(i).getOrderPosition();
-                            po -= 1;
-                            // results.get(i).setOrderPosition(results.get(i).getOrderPosition() - 1);
-                            results.get(i).setOrderPosition(po);
-                        }
-                    } else {
-                        RealmResults<Track> results = realm.where(Track.class)
-                                .greaterThanOrEqualTo("orderPosition", toPosition)
-                                .lessThan("orderPosition", fromPosition)
-                                .findAll();
-
-                        for (int i = 0; i < results.size(); i++) {
-                            // results.get(i).index += 1;
-                            int po = results.get(i).getOrderPosition();
-                            po += 1;
-                            //results.get(i).setOrderPosition(results.get(i).getOrderPosition() + 1);
-                            results.get(i).setOrderPosition(po);
-                        }
-                    }
-                    // item.index = toPosition;
-                    item.setOrderPosition(toPosition);
-                }
-            });
-
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-        //RealmRefresh.refreshRealm(realm);
-        realm.refresh();
-    }
-
     @Override
-    public void onRowSelected(ViewHolder myViewHolder) {
-        myViewHolder.cardTrack.setBackgroundColor(Color.GRAY);
+    public void onItemDismiss(int position) {
+
     }
 
-    @Override
-    public void onRowClear(ViewHolder myViewHolder) {
-        myViewHolder.cardTrack.setBackgroundColor(Color.WHITE);
-    }
 
     public interface onSavedListener {
         void onDeleteTrack(Track track, int position);
     }
 
-    public TrackAddAdapter(Activity context, ArrayList<Track> tracks, ArrayList<String> units, onSavedListener listener) {
+    public TrackAddAdapter(Activity context, ArrayList<Track> tracks, ArrayList<String> units, onSavedListener listener, OnStartDragListener dragLlistener,
+                           OnCustomerListChangedListener listChangedListener) {
         this.context = context;
         this.tracks = tracks;
         this.units = units;
         this.listener = listener;
+        mDragStartListener = dragLlistener;
+        mListChangedListener = listChangedListener;
     }
 
     public ArrayList<Track> getList() {
@@ -147,11 +110,15 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
 
             holder.spinnerUnit.setAdapter(unitAdapter);
 
-           // holder.edTrackName.setText("");
-        } else {
-           // if (!track.isNew()) {
+            if (track.getName() != null) {
                 holder.edTrackName.setText(track.getName());
-           // }
+            }
+
+            //
+        } else {
+            // if (!track.isNew()) {
+            holder.edTrackName.setText(track.getName());
+            // }
 
             UnitAdapter unitAdapter = new UnitAdapter(context,
                     R.layout.item_unit, R.id.title, units);
@@ -167,9 +134,19 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
             holder.imgColor.setColorFilter(Color.parseColor(track.getColor()));
         }
 
+        holder.imgDrag.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    mDragStartListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
+
         Realm realm = null;
         try {
-            realm = Realm.getDefaultInstance();
+            realm = RealmManager.getInstance();
             realm.executeTransaction(new Realm.Transaction() {
 
                 @Override
@@ -182,7 +159,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                 }
             });
 
-            Realm finalRealm = realm;
+            Realm finalRealm = RealmManager.getInstance();
 //            Realm finalRealm = Realm.getDefaultInstance();
             holder.spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -206,17 +183,22 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
             holder.edTrackName.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                    track.setName(" ");
+                    track.setEdited(false);
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                     finalRealm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
                             track.setName(holder.edTrackName.getText().toString());
                             track.setEdited(true);
+//                            Track track1 = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
+//                            if (track1 != null) {
+//                               // tracks.get(position).setName(holder.edTrackName.getText().toString());
+//
+//                            }
                         }
                     });
                 }
@@ -234,16 +216,13 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                     ColorPickerDialogBuilder
                             .with(context)
                             .setTitle("Choose color")
-                            // .initialColor(currentBackgroundColor)
                             .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                            // .noSliders()
                             .showAlphaSlider(false)
                             .setOnColorSelectedListener(new OnColorSelectedListener() {
-
                                 @Override
                                 public void onColorSelected(int selectedColor) {
-                                    //   toast("onColorSelected: 0x" + Integer.toHexString(selectedColor));
-                                 }
+
+                                }
                             })
                             .setPositiveButton("ok", new ColorPickerClickListener() {
                                 @Override
@@ -281,41 +260,37 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
 
                     Realm realm = null;
                     try {
-                        realm = Realm.getDefaultInstance();
+                        realm = RealmManager.getInstance();
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                if (track.isNew()){
+                                if (track.isNew()) {
                                     tracks.remove(position);
                                     notifyItemChanged(position);
                                     notifyItemRangeChanged(position, tracks.size());
                                 } else {
-
                                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                     builder.setTitle(context.getString(R.string.txtMsgDeleteEntry));
                                     builder.setMessage("Are you sure ?");
                                     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             Realm realm = null;
                                             try {
-                                                realm = Realm.getDefaultInstance();
+                                                realm = RealmManager.getInstance();
                                                 realm.executeTransaction(new Realm.Transaction() {
-
                                                     @Override
                                                     public void execute(Realm realm) {
                                                         tracks.remove(position);
                                                         notifyItemChanged(position);
                                                         notifyItemRangeChanged(position, tracks.size());
                                                         track.setEdited(true);
-
                                                         Track exTrack = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
                                                         if (exTrack != null) {
                                                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                                                             String userId = AppUtils.getStringPreference(context, Constants.UserId);
                                                             Query applesQuery = ref.child("Tracks").child(userId).orderByChild("trackId").equalTo(track.getId() + "");
-
+                                                            AppUtils.setLongPreference(context, Constants.DB_UPDATED, AppUtils.getCurrentTime());
                                                             applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                                 @Override
                                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -323,12 +298,10 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                                                         appleSnapshot.getRef().removeValue();
 
                                                                         realm.executeTransaction(new Realm.Transaction() {
-
                                                                             @Override
                                                                             public void execute(Realm realm) {
-                                                                                listener.onDeleteTrack(track,position);
+                                                                                listener.onDeleteTrack(track, position);
                                                                                 exTrack.deleteFromRealm();
-
                                                                                 // addTrackActivity.lstTracks.remove(position);
                                                                             }
                                                                         });
@@ -345,11 +318,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                                                 });
 
                                             } finally {
-                                                if (realm != null) {
-                                                    realm.close();
-//                                            finalRealm.close();
-//                                            finalRealm1.close();
-                                                }
+                                                RealmManager.closeInstance();
                                             }
                                         }
                                     });
@@ -365,9 +334,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                             }
                         });
                     } finally {
-                        if (realm != null) {
-                            realm.close();
-                        }
+                        RealmManager.closeInstance();
                     }
 
 //                    finalRealm.executeTransaction(new Realm.Transaction() {
@@ -381,13 +348,11 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
             });
 
         } finally {
-            if (realm != null) {
-                realm.close();
-            }
+            RealmManager.closeInstance();
         }
     }
 
-    public ArrayList<Track> getLstTracks(){
+    public ArrayList<Track> getLstTracks() {
         return tracks;
     }
 
@@ -395,8 +360,8 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
         return tracks;
     }
 
-    public void updateList(ArrayList<Track> results) {
-      //  this.tracks.clear();
+    public void updateList(final ArrayList<Track> results) {
+        // this.tracks.clear();
         this.tracks = results;
         notifyDataSetChanged();
     }
@@ -406,7 +371,8 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
         return tracks.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements
+            ItemTouchHelperViewHolder {
 
         @BindView(R.id.edTrackName)
         EditText edTrackName;
@@ -418,10 +384,22 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
         CardView cardTrack;
         @BindView(R.id.imgColor)
         ImageView imgColor;
+        @BindView(R.id.imgDrag)
+        ImageView imgDrag;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @Override
+        public void onItemSelected() {
+
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0);
         }
     }
 }

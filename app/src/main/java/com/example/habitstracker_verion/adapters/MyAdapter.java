@@ -18,6 +18,7 @@ import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.utils.AppUtils;
+import com.example.habitstracker_verion.utils.RealmManager;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -86,7 +87,7 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
         }
         Realm realm = null;
         try {
-            realm = Realm.getDefaultInstance();
+            realm = RealmManager.getInstance();
 
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -106,9 +107,7 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
                 }
             });
         } finally {
-            if (realm != null) {
-                realm.close();
-            }
+           RealmManager.closeInstance();
         }
 
 

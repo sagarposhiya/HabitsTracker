@@ -1,9 +1,10 @@
 package com.example.habitstracker_verion.views;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,23 +19,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.adapters.NewTrackAdapter;
 import com.example.habitstracker_verion.adapters.TrackAddAdapter;
+import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.models.Unit;
 import com.example.habitstracker_verion.utils.AppUtils;
 import com.example.habitstracker_verion.utils.Constants;
-import com.example.habitstracker_verion.utils.ItemMoveCallback;
+import com.example.habitstracker_verion.utils.RealmManager;
+import com.example.habitstracker_verion.utils.WrapContentLinearLayoutManager;
+import com.example.habitstracker_verion.utils.recyclercallbacks.OnCustomerListChangedListener;
+import com.example.habitstracker_verion.utils.recyclercallbacks.OnStartDragListener;
+import com.example.habitstracker_verion.utils.recyclercallbacks.SimpleItemTouchHelperCallback;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class AddTrackActivity extends AppCompatActivity implements View.OnClickListener, TrackAddAdapter.onSavedListener {
+public class AddTrackActivity extends AppCompatActivity implements View.OnClickListener, TrackAddAdapter.onSavedListener, OnCustomerListChangedListener,
+        OnStartDragListener {
 
     @BindView(R.id.llAddNewParam)
     LinearLayout llAddNewParam;
@@ -61,6 +72,12 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     TrackAddAdapter trackAddAdapter;
     NewTrackAdapter newTrackAdapter;
     String color;
+    private ItemTouchHelper mItemTouchHelper;
+
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
+    public static final String LIST_OF_SORTED_DATA_ID = "json_list_sorted_data_id";
+    public final static String PREFERENCE_FILE = "preference_file";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +99,14 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setAdapter() {
-        trackAddAdapter = new TrackAddAdapter(this, lstTracks, lstUnits, this);
-        rvTracks.setAdapter(trackAddAdapter);
+        lstTracks = getSortedList();
+        mRealm = Realm.getDefaultInstance();
+        trackAddAdapter = new TrackAddAdapter(this, lstTracks, lstUnits, this,this,this);
         rvTracks.setItemViewCacheSize(lstTracks.size());
-        ItemTouchHelper.Callback callback =
-                new ItemMoveCallback(trackAddAdapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(rvTracks);
-        ArrayList<Track> trackArrayList = trackAddAdapter.getList();
-        for (int i = 0; i < trackArrayList.size(); i++) {
-           // Log.e("TRACKS", trackArrayList.get(i).getName());
-        }
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(trackAddAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(rvTracks);
+        rvTracks.setAdapter(trackAddAdapter);
     }
 
     private void getTracks(String add) {
@@ -105,15 +119,60 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+    private ArrayList<Track> getSortedList(){
+        ArrayList<Track> sortedCustomers = new ArrayList<Track>();
+
+        //get the JSON array of the ordered of sorted customers
+        String jsonListOfSortedCustomerId = mSharedPreferences.getString(LIST_OF_SORTED_DATA_ID, "");
+
+        //check for null
+        if (!jsonListOfSortedCustomerId.isEmpty()){
+
+            //convert JSON array into a List<Long>
+            Gson gson = new Gson();
+            List<Long> listOfSortedCustomersId = gson.fromJson
+                    (jsonListOfSortedCustomerId, new TypeToken<List<Long>>(){}.getType());
+
+            //build sorted list
+            if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0){
+                for (Long id: listOfSortedCustomersId){
+                    for (Track track: lstTracks){
+                        if (track.getId() == id){
+                            sortedCustomers.add(track);
+                            lstTracks.remove(track);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //if there are still customers that were not in the sorted list
+            //maybe they were added after the last drag and drop
+            //add them to the sorted list
+            if (lstTracks.size() > 0){
+                sortedCustomers.addAll(lstTracks);
+            }
+
+            return sortedCustomers;
+        }else {
+            return lstTracks;
+        }
+    }
+
     private void getInit() {
-        mRealm = Realm.getDefaultInstance();
-        rvTracks.setLayoutManager(new LinearLayoutManager(this));
+        mRealm = RealmManager.getInstance();
+      //  rvTracks.setLayoutManager(new LinearLayoutManager(this));
+        rvTracks.setLayoutManager(new WrapContentLinearLayoutManager(AddTrackActivity.this));
         llAddNewParam.setOnClickListener(this);
         llSlider.setOnClickListener(this);
         llYesNo.setOnClickListener(this);
         llValue.setOnClickListener(this);
         imgAdd.setOnClickListener(this);
         imgClose.setOnClickListener(this);
+
+        mSharedPreferences = this.getApplicationContext()
+                .getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
     }
 
     private void getUnits() {
@@ -178,17 +237,19 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
 
             Realm realm = null;
             try {
-                realm = Realm.getDefaultInstance();
+                realm = RealmManager.getInstance();
                 int finalI = i;
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         if (!checkIfExists(added.get(finalI).getId()) || added.get(finalI).isNew()) { // || added.get(finalI).isEdited()
+                            RealmList<Entry> entries = new RealmList<>();
                             Track track = realm.createObject(Track.class, getNextKey());
                             track.setOrderPosition(getNextKey());
                             track.setName(name);
                             track.setUnit(added.get(finalI).getUnit());
                             track.setColor(added.get(finalI).getColor());
+                            track.setEntries(entries);
                             newToAdd.add(track);
                             realm.insert(track);
                         }
@@ -197,7 +258,7 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
 
             } finally {
                 if (realm != null) {
-                    realm.close();
+                    RealmManager.closeInstance();
                     progressDialog.dismiss();
                     onBackPressed();
                 }
@@ -250,7 +311,33 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();
-        ;
+       RealmManager.closeInstance();
+    }
+
+    @Override
+    public void onNoteListChanged(List<Track> customers) {
+        //after drag and drop operation, the new list of Customers is passed in here
+
+        //create a List of Long to hold the Ids of the
+        //Customers in the List
+        List<Integer> listOfSortedCustomerId = new ArrayList<Integer>();
+
+        for (Track customer: customers){
+            listOfSortedCustomerId.add(customer.getId());
+        }
+
+        //convert the List of Longs to a JSON string
+        Gson gson = new Gson();
+        String jsonListOfSortedCustomerIds = gson.toJson(listOfSortedCustomerId);
+
+
+        //save to SharedPreference
+        mEditor.putString(LIST_OF_SORTED_DATA_ID, jsonListOfSortedCustomerIds).commit();
+        mEditor.commit();
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 }

@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Reminder;
 import com.example.habitstracker_verion.receivers.AlarmReceiver;
+import com.example.habitstracker_verion.utils.RealmManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -98,7 +99,7 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void getInit() {
-        mRealm = Realm.getDefaultInstance();
+        mRealm = RealmManager.getInstance();
         imgBack.setOnClickListener(this);
         txtDate.setOnClickListener(this);
         txtTime.setOnClickListener(this);
@@ -272,8 +273,7 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();
-        ;
+       RealmManager.closeInstance();
     }
 
     @Override

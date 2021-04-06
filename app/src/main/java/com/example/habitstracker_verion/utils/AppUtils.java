@@ -3,6 +3,7 @@ package com.example.habitstracker_verion.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,6 +39,22 @@ public class AppUtils {
         SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return settings.getBoolean(key,false);
     }
+    
+    public static boolean setLongPreference(Context context,String key,long value){
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putLong(key, value);
+        return editor.commit();
+    }
+    
+    public static long getLongPreference(Context context,String key){
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return settings.getLong(key,00);
+    }
+    
+    public static long getCurrentTime(){
+        return System.currentTimeMillis();
+    }
 
     public static long getDateInMilliSeconds(String givenDateString, String format) {
         String DATE_TIME_FORMAT = format;
@@ -50,6 +67,12 @@ public class AppUtils {
             e.printStackTrace();
         }
         return timeInMilliseconds;
+    }
+
+    public static String convertTime(long time){
+        Date date = new Date(time);
+        Format format = new SimpleDateFormat("dd-MM-yyyy HH:mm a");
+        return format.format(date);
     }
 
     public static String getDate(long milliSeconds, String dateFormat)

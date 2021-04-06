@@ -24,6 +24,7 @@ import com.example.habitstracker_verion.receivers.LoadAlarmsService;
 import com.example.habitstracker_verion.utils.AlarmUtils;
 import com.example.habitstracker_verion.utils.AppUtils;
 import com.example.habitstracker_verion.utils.Constants;
+import com.example.habitstracker_verion.utils.RealmManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void getInit() {
-        mRealm = Realm.getDefaultInstance();
+        mRealm = RealmManager.getInstance();
         imgBack.setOnClickListener(this);
 
         flotingAddReminder.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +136,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();
+       RealmManager.closeInstance();
     }
 
     @Override

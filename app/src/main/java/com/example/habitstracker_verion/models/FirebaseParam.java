@@ -10,6 +10,7 @@ public class FirebaseParam {
     private String Name;
     private String unit;
     private String color;
+    private boolean isEntriesAvalable = false;
 
     public String getName() {
         return Name;
@@ -57,5 +58,13 @@ public class FirebaseParam {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isEntriesAvalable() {
+        return isEntriesAvalable;
+    }
+
+    public void setEntriesAvalable(boolean entriesAvalable) {
+        isEntriesAvalable = entriesAvalable;
     }
 }

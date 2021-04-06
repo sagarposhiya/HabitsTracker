@@ -26,6 +26,7 @@ import com.example.habitstracker_verion.receivers.AlarmReceiver;
 import com.example.habitstracker_verion.utils.AppUtils;
 import com.example.habitstracker_verion.utils.Constants;
 import com.example.habitstracker_verion.utils.DatabaseHelper;
+import com.example.habitstracker_verion.utils.RealmManager;
 import com.example.habitstracker_verion.views.AddEditAlarmActivity;
 import com.example.habitstracker_verion.views.DashboardActivity;
 import com.google.android.gms.auth.api.Auth;
@@ -71,7 +72,6 @@ public class LoginScreenActivity extends AppCompatActivity {
     ArrayList<FirebaseParam> paramArrayList = new ArrayList<>();
     Realm mRealm;
     String color;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,9 +106,28 @@ public class LoginScreenActivity extends AppCompatActivity {
     }
 
     private void getInit() {
-        mRealm = Realm.getDefaultInstance();
+        mRealm = RealmManager.getInstance();
         firebaseAuth = com.google.firebase.auth.FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+//        authStateListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                // Get signedIn user
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                //  getDataFromFirebase(user.getUid());
+//                //if user is signed in, we call a helper method to save the user details to Firebase
+//                if (user != null) {
+//                    // User is signed in
+//                    // you could place other firebase code
+//                    //logic to save the user details to Firebase
+//                    Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+//                } else {
+//                    // User is signed out
+//                    Log.e(TAG, "onAuthStateChanged:signed_out");
+//                }
+//            }
+//        };
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
@@ -116,6 +135,7 @@ public class LoginScreenActivity extends AppCompatActivity {
                 .build();
 
         mSignInClient = GoogleSignIn.getClient(this, gso);
+
 
         signInButton = findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +149,7 @@ public class LoginScreenActivity extends AppCompatActivity {
         });
     }
 
+
     private void getDataFromFirebase(String uid) {
         mDatabase.child("Tracks").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -139,7 +160,7 @@ public class LoginScreenActivity extends AppCompatActivity {
                         FirebaseParam param = snapshot.getValue(FirebaseParam.class);
                         paramArrayList.add(param);
                     }
-                   // Toast.makeText(LoginScreenActivity.this, "Data fetched " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(LoginScreenActivity.this, "Data fetched " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
                     addInDatabase(paramArrayList);
                 } else {
                     // Toast.makeText(LoginScreenActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -182,7 +203,7 @@ public class LoginScreenActivity extends AppCompatActivity {
         Realm realm = null;
 
         try {
-            realm = Realm.getDefaultInstance();
+            realm = RealmManager.getInstance();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -190,13 +211,15 @@ public class LoginScreenActivity extends AppCompatActivity {
                         //realm.beginTransaction();
                         RealmList<Entry> entries = new RealmList<>();
                         FirebaseParam param = paramArrayList.get(i);
-                        for (int j = 0; j < param.getEntries().size(); j++) {
-                            FirebaseEntryParam firebaseEntryParam = param.getEntries().get(j);
-                            Entry entry = realm.createObject(Entry.class, getNextEntryKey());
-                            //Entry entry = new Entry();
-                            entry.setValue(firebaseEntryParam.getValue());
-                            entry.setDate(firebaseEntryParam.getDate());
-                            entries.add(entry);
+                        if (param.isEntriesAvalable()) {
+                            for (int j = 0; j < param.getEntries().size(); j++) {
+                                FirebaseEntryParam firebaseEntryParam = param.getEntries().get(j);
+                                Entry entry = realm.createObject(Entry.class, getNextEntryKey());
+                                //Entry entry = new Entry();
+                                entry.setValue(firebaseEntryParam.getValue());
+                                entry.setDate(firebaseEntryParam.getDate());
+                                entries.add(entry);
+                            }
                         }
 
                         Track track = realm.createObject(Track.class, getNextKey());
@@ -206,18 +229,17 @@ public class LoginScreenActivity extends AppCompatActivity {
                         track.setEntries(entries);
                         track.setColor(param.getColor());
                         realm.insert(track);
-                        //   realm.commitTransaction();
+                        //realm.commitTransaction();
                     }
 
-                  //  Toast.makeText(LoginScreenActivity.this, "Data added " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
+                    AppUtils.setLongPreference(LoginScreenActivity.this,Constants.DB_UPDATED,AppUtils.getCurrentTime());
+                    //  Toast.makeText(LoginScreenActivity.this, "Data added " + paramArrayList.size(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Exception :- " + e.getMessage());
         } finally {
-            if (realm != null) {
-                realm.close();
-            }
+           RealmManager.closeInstance();
         }
     }
 
@@ -315,6 +337,7 @@ public class LoginScreenActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+       // RealmManager.closeInstance();
 //        if (authStateListener != null) {
 //            firebaseAuth.removeAuthStateListener(authStateListener);
 //        }
@@ -323,7 +346,7 @@ public class LoginScreenActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();
+       RealmManager.closeInstance();
     }
 
 }

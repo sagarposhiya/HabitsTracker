@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.models.Entry;
+import com.example.habitstracker_verion.utils.RealmManager;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -70,7 +71,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.View
 
                 Realm realm = null;
                 try {
-                    realm = Realm.getDefaultInstance();
+                    realm = RealmManager.getInstance();
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
@@ -82,9 +83,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.View
                     });
 
                 } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
+                    RealmManager.closeInstance();
                 }
 
 

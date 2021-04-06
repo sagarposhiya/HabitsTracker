@@ -23,7 +23,7 @@
         android:gravity="center"
         android:layout_toRightOf="@+id/icon"
         android:textColor="@color/black"
-        android:text="Strawberry"
+        android:text="Unit"
         android:textSize="16dp" />
 
 </LinearLayout>

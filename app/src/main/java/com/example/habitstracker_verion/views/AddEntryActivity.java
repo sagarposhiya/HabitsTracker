@@ -2,7 +2,9 @@ package com.example.habitstracker_verion.views;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
@@ -31,13 +33,17 @@ import com.example.habitstracker_verion.models.Entry;
 import com.example.habitstracker_verion.models.Track;
 import com.example.habitstracker_verion.utils.AppUtils;
 import com.example.habitstracker_verion.utils.Constants;
+import com.example.habitstracker_verion.utils.RealmManager;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xw.repo.BubbleSeekBar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +84,12 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
     int myday, myMonth, myYear, myHour, myMinute;
     String color;
     String action;
+
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
+    public static final String LIST_OF_SORTED_DATA_ID = "json_list_sorted_data_id";
+    public final static String PREFERENCE_FILE = "preference_file";
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +113,8 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setTrackAdapter() {
+        lstTracks = getSortedList();
+        mRealm = Realm.getDefaultInstance();
         addEntryAdapter = new AddEntryAdapter(this, lstTracks);
         rvEntry.setAdapter(addEntryAdapter);
         rvEntry.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -120,6 +134,46 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
+    }
+
+    private ArrayList<Track> getSortedList(){
+        ArrayList<Track> sortedCustomers = new ArrayList<Track>();
+
+        //get the JSON array of the ordered of sorted customers
+        String jsonListOfSortedCustomerId = mSharedPreferences.getString(LIST_OF_SORTED_DATA_ID, "");
+
+        //check for null
+        if (!jsonListOfSortedCustomerId.isEmpty()){
+
+            //convert JSON array into a List<Long>
+            Gson gson = new Gson();
+            List<Long> listOfSortedCustomersId = gson.fromJson
+                    (jsonListOfSortedCustomerId, new TypeToken<List<Long>>(){}.getType());
+
+            //build sorted list
+            if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0){
+                for (Long id: listOfSortedCustomersId){
+                    for (Track track: lstTracks){
+                        if (track.getId() == id){
+                            sortedCustomers.add(track);
+                            lstTracks.remove(track);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //if there are still customers that were not in the sorted list
+            //maybe they were added after the last drag and drop
+            //add them to the sorted list
+            if (lstTracks.size() > 0){
+                sortedCustomers.addAll(lstTracks);
+            }
+
+            return sortedCustomers;
+        }else {
+            return lstTracks;
+        }
     }
 
     private void getTracks() {
@@ -152,7 +206,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void getInit() {
-        mRealm = Realm.getDefaultInstance();
+        mRealm = RealmManager.getInstance();
         rvEntry.setLayoutManager(new LinearLayoutManager(this));
         txtToolbarTitle.setOnClickListener(this);
         imgAdd.setOnClickListener(this);
@@ -161,6 +215,10 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         imgClose.setOnClickListener(this);
         dpd = new DatePickerDialog(AddEntryActivity.this);
         dpd.getDatePicker().setMaxDate(new Date().getTime());
+
+        mSharedPreferences = this.getApplicationContext()
+                .getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -201,7 +259,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                 final Track[] track = new Track[1];
                 Realm realm = null;
                 try {
-                    realm = Realm.getDefaultInstance();
+                    realm = RealmManager.getInstance();
                     int finalI = i;
                     int finalI1 = i;
                     realm.executeTransaction(new Realm.Transaction() {
@@ -221,12 +279,13 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                     });
 
                 } finally {
-                    if (realm != null) {
-                        realm.close();
-                       // onBackPressed();
-                    }
+//                    if (realm != null) {
+//                       RealmManager.closeInstance();
+//                       // onBackPressed();
+//                    }
                 }
 //                if (track[0].isValueChanged()) {
+                realm = RealmManager.getInstance();
                 realm.beginTransaction();
                 RealmList<Entry> entries = track[0].getEntries();
                 entries.add(entry[0]);
@@ -237,9 +296,9 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
             }
         }
 
-        if (!isChanged){
-           // Toast.makeText(this, "Please change value", Toast.LENGTH_SHORT).show();
-        } else {
+//        if (!isChanged){
+//           // Toast.makeText(this, "Please change value", Toast.LENGTH_SHORT).show();
+//        } else {
 //            finish();
 //            finishAffinity();
             Toast.makeText(this, "Saved Entries", Toast.LENGTH_SHORT).show();
@@ -254,7 +313,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
             } else if (action.equalsIgnoreCase(Constants.PLUS_BUTTON)){
                 onBackPressed();
             }
-        }
+//        }
     }
 
     public int getNextKey() {
@@ -287,7 +346,8 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();
+       RealmManager.closeInstance();
+       mRealm.close();
     }
 
     @Override

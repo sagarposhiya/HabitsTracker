@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -33,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitstracker_verion.LoginScreenActivity;
 import com.example.habitstracker_verion.R;
 import com.example.habitstracker_verion.adapters.EntryListAdapter;
 import com.example.habitstracker_verion.adapters.TrackEntriesAdapter;
@@ -46,6 +48,7 @@ import com.example.habitstracker_verion.utils.BottomSheetBehaviorRecyclerManager
 import com.example.habitstracker_verion.utils.ClaimsXAxisValueFormatter;
 import com.example.habitstracker_verion.utils.Constants;
 import com.example.habitstracker_verion.utils.ICustomBottomSheetBehavior;
+import com.example.habitstracker_verion.utils.RealmManager;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -63,6 +66,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hendraanggrian.recyclerview.widget.ExpandableRecyclerView;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
@@ -132,6 +136,11 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     private RecyclerView mBottomSheetRecyclerLeft;
     private LinearLayoutManager mLayoutManagerLeft;
    // private RecyclerAdapter mAdapterLeft;
+
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
+    public static final String LIST_OF_SORTED_DATA_ID = "json_list_sorted_data_id";
+    public final static String PREFERENCE_FILE = "preference_file";
 
 
     @Override
@@ -295,6 +304,9 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     }
 
     private void setTrackAdapter() {
+        lstTracks = getSortedList();
+      //  mRealm = RealmManager.getInstance();
+        mRealm = Realm.getDefaultInstance();
         adapter = new TrackEntriesAdapter(this, this, lstTracks, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         //myAdapter = new MyAdapter(layoutManager,this,lstTracks);
@@ -303,7 +315,48 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         recyclerView.setAdapter(adapter);
     }
 
+    private ArrayList<Track> getSortedList(){
+        ArrayList<Track> sortedCustomers = new ArrayList<Track>();
+
+        //get the JSON array of the ordered of sorted customers
+        String jsonListOfSortedCustomerId = mSharedPreferences.getString(LIST_OF_SORTED_DATA_ID, "");
+
+        //check for null
+        if (!jsonListOfSortedCustomerId.isEmpty()){
+
+            //convert JSON array into a List<Long>
+            Gson gson = new Gson();
+            List<Long> listOfSortedCustomersId = gson.fromJson
+                    (jsonListOfSortedCustomerId, new TypeToken<List<Long>>(){}.getType());
+
+            //build sorted list
+            if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0){
+                for (Long id: listOfSortedCustomersId){
+                    for (Track track: lstTracks){
+                        if (track.getId() == id){
+                            sortedCustomers.add(track);
+                            lstTracks.remove(track);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //if there are still customers that were not in the sorted list
+            //maybe they were added after the last drag and drop
+            //add them to the sorted list
+            if (lstTracks.size() > 0){
+                sortedCustomers.addAll(lstTracks);
+            }
+
+            return sortedCustomers;
+        }else {
+            return lstTracks;
+        }
+    }
+
     private void getTracks() {
+        mRealm = RealmManager.getInstance();
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -329,6 +382,11 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
             String userId = AppUtils.getStringPreference(this, Constants.UserId);
             FirebaseParam param = new FirebaseParam();
+            if (entryParams.size() > 0){
+                param.setEntriesAvalable(true);
+            } else {
+                param.setEntriesAvalable(false);
+            }
             param.setEntries(entryParams);
             param.setUid(userId);
             param.setUnit(track.getUnit());
@@ -336,11 +394,12 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
             param.setTrackId(track.getId() + "");
             param.setColor(track.getColor());
             mDatabase.child("Tracks").child(userId).child(String.valueOf(track.getId())).setValue(param);
+            AppUtils.setLongPreference(DashboardActivity.this,Constants.DB_UPDATED,AppUtils.getCurrentTime());
         }
     }
 
     private void getInit() {
-        mRealm = Realm.getDefaultInstance();
+        mRealm = RealmManager.getInstance();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -361,6 +420,10 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
         mBottomSheetView.setVisibility(View.GONE);
 
+        mSharedPreferences = this.getApplicationContext()
+                .getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
+
     }
 
     @Override
@@ -376,7 +439,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
         Realm realm = null;
         try {
-            realm = Realm.getDefaultInstance();
+            realm =RealmManager.getInstance();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -403,9 +466,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                 }
             });
         } finally {
-            if (realm != null) {
-                realm.close();
-            }
+            RealmManager.closeInstance();
         }
     }
 
@@ -440,7 +501,8 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();
+       RealmManager.closeInstance();
+       mRealm.close();
     }
 
     @Override
@@ -522,7 +584,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         if (isSort) {
             Realm realm = null;
             try {
-                realm = Realm.getDefaultInstance();
+                realm = RealmManager.getInstance();
 //            if (realm.isInTransaction()){
 //                realm.commitTransaction();
 //            }
@@ -546,7 +608,7 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
                 });
             } finally {
                 if (realm != null) {
-                    realm.close();
+                    RealmManager.closeInstance();
                 }
             }
         }
@@ -675,5 +737,11 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         }
         lineChartFull.highlightValue(null);
         setTrackDetails(track,false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mRealm.close();
     }
 }
