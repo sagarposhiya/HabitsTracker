@@ -148,4 +148,13 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     public void onAlarmsLoaded(ArrayList<Alarm> alarms) {
         mAdapter.setAlarms(alarms);
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
+        Intent intent = new Intent(ReminderActivity.this,DashboardActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

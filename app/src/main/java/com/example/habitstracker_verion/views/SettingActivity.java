@@ -213,7 +213,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         RealmManager.closeInstance();
         RealmManager.closeInstance();
-     //   RealmManager.closeInstance();
+        //   RealmManager.closeInstance();
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
                 .name("habbitstracker.realm")
                 .schemaVersion(0)
@@ -227,6 +227,15 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
+        Intent intent = new Intent(SettingActivity.this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }

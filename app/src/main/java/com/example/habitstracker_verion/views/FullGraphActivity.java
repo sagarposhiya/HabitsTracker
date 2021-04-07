@@ -354,6 +354,9 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+       // super.onBackPressed();
+        Intent intent = new Intent(FullGraphActivity.this,DashboardActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

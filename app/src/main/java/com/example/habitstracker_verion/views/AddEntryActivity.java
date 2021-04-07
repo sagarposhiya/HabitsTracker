@@ -358,4 +358,13 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
         String formatted = format1.format(nowSelected.getTime());
         txtToolbarTitle.setText("" + formatted);
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
+        Intent intent = new Intent(AddEntryActivity.this,DashboardActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
