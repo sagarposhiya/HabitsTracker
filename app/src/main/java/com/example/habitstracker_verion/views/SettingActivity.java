@@ -74,6 +74,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         toolbar.setBackgroundColor(Color.parseColor(color));
         btnChooseColor.setBackgroundColor(Color.parseColor(color));
         btnLogout.setBackgroundColor(Color.parseColor(color));
+        btnClear.setBackgroundColor(Color.parseColor(color));
         txtSelectedColor.setBackgroundColor(Color.parseColor(color));
     }
 
@@ -191,6 +192,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         AppUtils.setStringPreference(SettingActivity.this, Constants.themeColor, hexColor);
                         toolbar.setBackgroundColor(Color.parseColor(hexColor));
                         btnChooseColor.setBackgroundColor(Color.parseColor(hexColor));
+                        btnLogout.setBackgroundColor(Color.parseColor(hexColor));
+                        btnClear.setBackgroundColor(Color.parseColor(hexColor));
                         txtSelectedColor.setBackgroundColor(Color.parseColor(hexColor));
                     }
                 })

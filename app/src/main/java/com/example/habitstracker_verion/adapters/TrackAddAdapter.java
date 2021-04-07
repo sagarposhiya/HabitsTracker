@@ -113,13 +113,8 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
             if (track.getName() != null) {
                 holder.edTrackName.setText(track.getName());
             }
-
-            //
         } else {
-            // if (!track.isNew()) {
             holder.edTrackName.setText(track.getName());
-            // }
-
             UnitAdapter unitAdapter = new UnitAdapter(context,
                     R.layout.item_unit, R.id.title, units);
             holder.spinnerUnit.setAdapter(unitAdapter);
@@ -194,11 +189,6 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                         public void execute(Realm realm) {
                             track.setName(holder.edTrackName.getText().toString());
                             track.setEdited(true);
-//                            Track track1 = realm.where(Track.class).equalTo("id", track.getId()).findFirst();
-//                            if (track1 != null) {
-//                               // tracks.get(position).setName(holder.edTrackName.getText().toString());
-//
-//                            }
                         }
                     });
                 }
@@ -227,9 +217,7 @@ public class TrackAddAdapter extends RecyclerView.Adapter<TrackAddAdapter.ViewHo
                             .setPositiveButton("ok", new ColorPickerClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                                    //changeBackgroundColor(selectedColor);
                                     String hexColor = String.format("#%06X", (0xFFFFFF & selectedColor));
-                                    // holder.imgColor.setBackgroundColor(Color.parseColor(hexColor));
                                     holder.imgColor.setColorFilter(Color.parseColor(hexColor));
 
                                     finalRealm1.executeTransaction(new Realm.Transaction() {

@@ -57,12 +57,10 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.View
         long emissionsMilliSince1970Time = ((long) entry.getDate());
 
         // Show time in local version
-        //SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
         SimpleDateFormat format = new SimpleDateFormat("MMM dd, hh:mm a");
         Date timeMilliseconds = new Date(emissionsMilliSince1970Time);
 
         holder.txtDate.setText(format.format(timeMilliseconds));
-       // holder.txtValue.setText(String.valueOf(entry.getValue()));
         holder.txtValue.setText(String.valueOf(new DecimalFormat("#").format(entry.getValue())));
 
         holder.imgClose.setOnClickListener(new View.OnClickListener() {
@@ -85,42 +83,6 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.View
                 } finally {
                     RealmManager.closeInstance();
                 }
-
-
-//                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//                builder.setTitle("Delete Entry");
-//                builder.setMessage("Are you sure ?");
-//                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Realm realm = null;
-//                        try {
-//                            realm = Realm.getDefaultInstance();
-//                            realm.executeTransaction(new Realm.Transaction() {
-//                                @Override
-//                                public void execute(Realm realm) {
-//                                    entries.remove(position);
-//                                    notifyDataSetChanged();
-//                                    entry.deleteFromRealm();
-//                                    listner.onDeleteEntry();
-//                                }
-//                            });
-//
-//                        } finally {
-//                            if (realm != null) {
-//                                realm.close();
-//                            }
-//                        }
-//                    }
-//                });
-//
-//                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder.show();
             }
         });
 

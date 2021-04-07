@@ -2,6 +2,7 @@ package com.example.habitstracker_verion.views;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -339,5 +340,13 @@ public class AddTrackActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent intent = new Intent(AddTrackActivity.this,DashboardActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -51,7 +51,6 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     Realm mRealm;
     RealmResults<Reminder> reminders;
     ArrayList<Reminder> lstReminders = new ArrayList<>();
-    ReminderAdapter adapter;
     private AlarmsAdapter mAdapter;
     String color;
     @Override
@@ -70,6 +69,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
         color = AppUtils.getStringPreference(this, Constants.themeColor);
         toolbar.setBackgroundColor(Color.parseColor(color));
         //  btnDone.setBackgroundColor(Color.parseColor(color));
+      //  flotingAddReminder.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
         flotingAddReminder.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
     }
 

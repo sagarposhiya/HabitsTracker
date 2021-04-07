@@ -72,9 +72,7 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
         holder.txtIncrease.setText(track.getIncrement());
         holder.txtParamName.setText(track.getName());
         holder.txtUnit.setText(track.getUnit());
-        //        holder.txtEntries.setText(track.getEntries().size());
-
-
+        
         holder.txtEntries.setText(track.getEntries().size() + " entries");
 
         List<String> dates = new ArrayList<>();
@@ -152,32 +150,15 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
 
     public void renderData(List<String> dates, List<Double> allAmounts, LineChart volumeReportChart) {
 
-//        final ArrayList<String> xAxisLabel = new ArrayList<>();
-//        xAxisLabel.add("1");
-//        xAxisLabel.add("7");
-//        xAxisLabel.add("14");
-//        xAxisLabel.add("21");
-//        xAxisLabel.add("28");
-//        xAxisLabel.add("30");
-
         XAxis xAxis = volumeReportChart.getXAxis();
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
         xAxis.enableGridDashedLine(2f, 7f, 0f);
-//        xAxis.setAxisMaximum(5f);
-//        xAxis.setAxisMinimum(0f);
-//      //  xAxis.setLabelCount(6, true);
-//        xAxis.setGranularityEnabled(true);
-//        xAxis.setGranularity(7f);
-//        xAxis.setLabelRotationAngle(315f);
-
-        //xAxis.setValueFormatter(new ClaimsXAxisValueFormatter(dates));
         xAxis.setCenterAxisLabels(true);
         xAxis.setDrawLabels(false);
         xAxis.setDrawLimitLinesBehindData(true);
 
         LimitLine ll1 = new LimitLine(Float.parseFloat("02220"), "");
-        //ll1.setLineColor(getResources().getColor(R.color.greyish_brown));
         ll1.setLineWidth(4f);
         ll1.enableDashedLine(10f, 10f, 0f);
         ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
@@ -196,28 +177,20 @@ public class MyAdapter extends ExpandableRecyclerView.Adapter<MyAdapter.ViewHold
 
         YAxis leftAxis = volumeReportChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
-        //leftAxis.addLimitLine(ll1);
-        //leftAxis.addLimitLine(ll2);
-
-        //leftAxis.setAxisMaximum(findMaximumValueInList(allAmounts).floatValue() + 100f);
         leftAxis.setAxisMinimum(0f);
         leftAxis.enableGridDashedLine(10f, 10f, 0f);
         leftAxis.setDrawZeroLine(false);
         leftAxis.setDrawLimitLinesBehindData(false);
         leftAxis.setDrawLabels(false);
-        //XAxis xAxis = mBarChart.getXAxis();
-        //leftAxis.setValueFormatter(new ClaimsYAxisValueFormatter());
 
         volumeReportChart.getDescription().setEnabled(true);
         Description description = new Description();
-        // description.setText(UISetters.getFullMonthName());//commented for weekly reporting
         description.setText("");
         description.setTextSize(15f);
         volumeReportChart.getDescription().setPosition(0f, 0f);
         volumeReportChart.setDescription(description);
         volumeReportChart.getAxisRight().setEnabled(false);
-
-        //setData()-- allAmounts is data to display;
+        
         setDataForWeeksWise(allAmounts, volumeReportChart, dates);
 
     }

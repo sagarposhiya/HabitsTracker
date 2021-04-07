@@ -143,14 +143,6 @@ public final class AddEditAlarmFragment extends Fragment {
         alarm.setDay(Alarm.SAT, true);
         alarm.setDay(Alarm.SUN, true);
 
-//        alarm.setDay(Alarm.MON, mMon.isChecked());
-//        alarm.setDay(Alarm.TUES, mTues.isChecked());
-//        alarm.setDay(Alarm.WED, mWed.isChecked());
-//        alarm.setDay(Alarm.THURS, mThurs.isChecked());
-//        alarm.setDay(Alarm.FRI, mFri.isChecked());
-//        alarm.setDay(Alarm.SAT, mSat.isChecked());
-//        alarm.setDay(Alarm.SUN, mSun.isChecked());
-
         final int rowsUpdated = DatabaseHelper.getInstance(getContext()).updateAlarm(alarm);
         final int messageId = (rowsUpdated == 1) ? R.string.update_complete : R.string.update_failed;
 

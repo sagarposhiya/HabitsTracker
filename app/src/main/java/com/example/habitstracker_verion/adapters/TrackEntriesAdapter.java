@@ -84,7 +84,6 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         holder.txtIncrease.setText(track.getIncrement());
         holder.txtParamName.setText(track.getName());
         holder.txtUnit.setText(track.getUnit().replace(".",""));
-        //        holder.txtEntries.setText(track.getEntries().size());
 
         holder.txtEntries.setText(track.getEntries().size() + " entries");
 
@@ -177,7 +176,6 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
         xAxis.enableGridDashedLine(2f, 7f, 0f);
-        //xAxis.setCenterAxisLabels(true);
         xAxis.setDrawLabels(false);
         xAxis.setDrawLimitLinesBehindData(true);
         xAxis.setDrawAxisLine(false);
@@ -202,7 +200,6 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
         ll2.setLineColor(Color.parseColor("#FFFFFF"));
 
         xAxis.removeAllLimitLines();
-        // xAxis.addLimitLine(ll1);
 
         YAxis leftAxis = volumeReportChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
@@ -231,7 +228,6 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
 
         ArrayList<com.github.mikephil.charting.data.Entry> values = new ArrayList<>();
         for (int i = 0; i < amounts.size(); i++) {
-            //values.add(new Entry(i, amounts.get(i).floatValue()));
             values.add(new com.github.mikephil.charting.data.Entry(Float.parseFloat(String.valueOf(dates.get(i))), amounts.get(i).floatValue()));
         }
 
@@ -255,8 +251,6 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
             //  set1.setFillDrawable(ContextCompat.getDrawable(context, R.drawable.gradient));
 
             if (Utils.getSDKInt() >= 18) {
-//                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.gradient);
-//                set1.setFillDrawable(drawable);
 
                 if (track.getColor() != null) {
                     Drawable unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.gradient);
@@ -292,10 +286,6 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
             volumeReportChart.getAxisLeft().setDrawGridLines(false);
             volumeReportChart.getXAxis().setDrawGridLines(false);
             volumeReportChart.getLegend().setEnabled(false);
-            //volumeReportChart.setLogEnabled(false);
-            //  volumeReportChart.getAxisLeft().setAxisMaxValue(amounts.get(amounts.size() - 1).floatValue() + 10);
-            //volumeReportChart.getXAxis().setAxisMaximum(dates.get(dates.size() - 1).floatValue() + 10);
-
             volumeReportChart.setData(data);
         }
     }
@@ -332,39 +322,6 @@ public class TrackEntriesAdapter extends RecyclerView.Adapter<TrackEntriesAdapte
 
         @Override
         public void onClick(View v) {
-//            if (mOriginalHeight == 0) {
-//                mOriginalHeight = itemView.getHeight();
-//               // mOriginalHeight = Resources.getSystem().getDisplayMetrics().heightPixels;;
-//            }
-//            ValueAnimator valueAnimator;
-//
-////            if (mIsViewExpanded){
-////                mIsViewExpanded = false;
-////                valueAnimator = ValueAnimator.ofInt(mOriginalHeight + mOriginalHeight,mOriginalHeight);
-////            } else {
-////                mIsViewExpanded = true;
-////                valueAnimator = ValueAnimator.ofInt(mOriginalHeight,mOriginalHeight + mOriginalHeight);
-////            }
-//
-//
-//            if (!mIsViewExpanded) {
-//                mIsViewExpanded = true;
-//                valueAnimator = ValueAnimator.ofInt(mOriginalHeight, mOriginalHeight + (int) (mOriginalHeight * 1.5));
-//            } else {
-//                mIsViewExpanded = false;
-//                valueAnimator = ValueAnimator.ofInt(mOriginalHeight + (int) (mOriginalHeight * 1.5), mOriginalHeight);
-//            }
-//
-//            valueAnimator.setDuration(500);
-//            valueAnimator.setInterpolator(new LinearInterpolator());
-//            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                public void onAnimationUpdate(ValueAnimator animation) {
-//                    Integer value = (Integer) animation.getAnimatedValue();
-//                    itemView.getLayoutParams().height = value.intValue();
-//                    itemView.requestLayout();
-//                }
-//            });
-//            valueAnimator.start();
         }
     }
 }

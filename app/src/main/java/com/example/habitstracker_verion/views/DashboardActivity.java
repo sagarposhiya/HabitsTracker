@@ -170,24 +170,13 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         color = AppUtils.getStringPreference(this, Constants.themeColor);
         toolbar.setBackgroundColor(Color.parseColor(color));
         flotingAddEntry.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
-           // flotingAddEntry.setBackgroundColor(Color.parseColor(color));
-       // flotingAddEntry.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, Color.parseColor(color))));
     }
     private void getInitBottomSheet() {
-
-//        mParent = (CoordinatorLayout) findViewById(R.id.parent_container);
-//        mParent.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-//
-//        mBottomSheetView = findViewById(R.id.main_bottomsheet);
 
         mBottomSheetView.setVisibility(View.VISIBLE);
         mBottomSheetRecyclerLeft = (RecyclerView) findViewById(R.id.btm_recyclerview_left);
         mLayoutManagerLeft = new LinearLayoutManager(this);
         mBottomSheetRecyclerLeft.setLayoutManager(mLayoutManagerLeft);
-
-//        mBottomSheetRecyclerRight = (RecyclerView) findViewById(R.id.btm_recyclerview_right);
-//        mLayoutManagerRight = new LinearLayoutManager(this);
-//        mBottomSheetRecyclerRight.setLayoutManager(mLayoutManagerRight);
 
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetView);
         mBottomSheetBehavior.setHideable(false);
@@ -211,13 +200,9 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
 
         mBottomSheetRecyclerLeft.setAdapter(listAdapter);
 
-//        mAdapterLeft.update(modelsLeft);
-//        mAdapterRight.update(modelsRight);
-
         //helper to rule scrolls
         BottomSheetBehaviorRecyclerManager manager = new BottomSheetBehaviorRecyclerManager(mParent, mBottomSheetBehavior, mBottomSheetView);
         manager.addControl(mBottomSheetRecyclerLeft);
-       // manager.addControl(mBottomSheetRecyclerRight);
         manager.create();
     }
 
@@ -233,85 +218,13 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
     }
 
     private void setEvents() {
-
-//        rvEntries.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                v.getParent().requestDisallowInterceptTouchEvent(true);
-//                v.onTouchEvent(event);
-//                return true;
-//            }
-//        });
-
-//        rvEntries.setOnTouchListener(new RecyclerView.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                int action = event.getAction();
-//                switch (action) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        // Disallow NestedScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(true);
-//                        break;
-//
-//                    case MotionEvent.ACTION_UP:
-//                        // Allow NestedScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(false);
-//                        break;
-//                }
-//
-//                // Handle RecyclerView touch events.
-//                v.onTouchEvent(event);
-//                return true;
-//            }
-//        });
-
-//        tracks.addChangeListener(new RealmChangeListener<RealmResults<Track>>() {
-//            @Override
-//            public void onChange(RealmResults<Track> results) {
-//                lstTracks = new ArrayList<>();
-//                lstTracks.addAll(results);
-//                addinFirebase(tracks);
-//                setTrackAdapter();
-//            }
-//        });
-
-//        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//                switch (newState) {
-//                    case BottomSheetBehavior.STATE_HIDDEN:
-//                        break;
-//                    case BottomSheetBehavior.STATE_EXPANDED: {
-//                        //btnBottomSheet.setText("Close Sheet");
-//                    }
-//                    break;
-//                    case BottomSheetBehavior.STATE_COLLAPSED: {
-//                        //  btnBottomSheet.setText("Expand Sheet");
-//                    }
-//                    break;
-//                    case BottomSheetBehavior.STATE_DRAGGING:
-//                        break;
-//                    case BottomSheetBehavior.STATE_SETTLING:
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//            }
-//        });
     }
 
     private void setTrackAdapter() {
         lstTracks = getSortedList();
-      //  mRealm = RealmManager.getInstance();
         mRealm = Realm.getDefaultInstance();
         adapter = new TrackEntriesAdapter(this, this, lstTracks, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        //myAdapter = new MyAdapter(layoutManager,this,lstTracks);
-        //exRvList.setLayoutManager(layoutManager);
-        // exRvList.setAdapter(myAdapter);
         recyclerView.setAdapter(adapter);
     }
 
@@ -557,12 +470,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
         Intent intent = new Intent(DashboardActivity.this,FullGraphActivity.class);
         intent.putExtra(Constants.trackId,track.getId());
         startActivity(intent);
-
-//        rlFullGraph.setVisibility(View.VISIBLE);
-//        recyclerView.setVisibility(View.GONE);
-//        flotingAddEntry.setVisibility(View.GONE);
-//        txtTitle.setText(track.getName());
-//        setTrackDetails(track,true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -587,9 +494,6 @@ public class DashboardActivity extends AppCompatActivity implements OnChartValue
             Realm realm = null;
             try {
                 realm = RealmManager.getInstance();
-//            if (realm.isInTransaction()){
-//                realm.commitTransaction();
-//            }
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {

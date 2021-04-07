@@ -20,14 +20,4 @@ public class DecimalValueFormatter implements IValueFormatter {
         return mFormat.format(value);
     }
 
-//    @Override
-//    public String getFormattedValue(float value, AxisBase axis) {
-//        return mFormat.format(value);
-//    }
-//
-//    @Override
-//    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-//        return null;
-//    }
-
 }

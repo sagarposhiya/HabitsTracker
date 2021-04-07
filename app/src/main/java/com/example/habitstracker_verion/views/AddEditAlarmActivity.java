@@ -51,9 +51,6 @@ public final class AddEditAlarmActivity extends AppCompatActivity {
         setContentView(R.layout.edit_alarm);
         ButterKnife.bind(this);
         setAppTheme();
-        //noinspection ConstantConditions
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setTitle(getToolbarTitle());
         setSupportActionBar(toolbar);
         txtToolbarTitle.setText(getToolbarTitle());
         String color = AppUtils.getStringPreference(this, Constants.themeColor);

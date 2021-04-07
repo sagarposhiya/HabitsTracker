@@ -72,7 +72,6 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
         ButterKnife.bind(this);
         getInit();
         setEvents();
-        //setCurrentDate();
     }
 
     private void setEvents() {
@@ -149,15 +148,12 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
             mRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    //if (!checkIfExists(added.get(finalI).getId())){ // || added.get(finalI).isEdited()
                     Reminder reminder = realm.createObject(Reminder.class, getNextKey());
                     reminder.setStrDate(strDate);
                     reminder.setStrTime(strTime);
                     reminder.setDate(date);
                     reminder.setTime(time);
                     reminder.setTitle(title);
-
-                  //  realm.insert(reminder);
 
                     Calendar cal=Calendar.getInstance();
                     cal.set(Calendar.MONTH,month);
@@ -166,20 +162,11 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
                     cal.set(Calendar.HOUR_OF_DAY,myHour);
                     cal.set(Calendar.MINUTE,myMinute);
 
-
-                //    setAlarm(cal);
                     startAlarm();
-
 
                     Toast.makeText(AddReminderActivity.this, "Added", Toast.LENGTH_SHORT).show();
                     edTitle.setText("");
-                   // setCurrentDate();
 
-//                    Calendar calendar = Calendar.getInstance();
-//                    calendar.set(myYear, myMonth, myday,myHour,myMinute);
-
-
-                    // }
                 }
             });
 
@@ -196,7 +183,6 @@ public class AddReminderActivity extends AppCompatActivity implements View.OnCli
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
         }
-
 
     }
 

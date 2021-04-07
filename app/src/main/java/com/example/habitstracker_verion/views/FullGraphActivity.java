@@ -134,7 +134,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
         mBottomSheetRecyclerLeft.setLayoutManager(mLayoutManagerLeft);
 
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetView);
-      //  mBottomSheetBehavior.setHideable(false);
+       //  mBottomSheetBehavior.setHideable(false);
 
         mBottomSheetBehavior.setPeekHeight(150);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -283,7 +283,7 @@ public class FullGraphActivity extends AppCompatActivity implements EntryListAda
         LineDataSet set1;
         if (volumeReportChart.getData() != null &&
                 volumeReportChart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) volumeReportChart.getData().getDataSetByIndex(0);
+            set1 = (LineDataSet) volumeReportChart.getData().getDataSetByIndex(0    );
             set1.setValues(values);
             volumeReportChart.getData().notifyDataChanged();
             volumeReportChart.notifyDataSetChanged();

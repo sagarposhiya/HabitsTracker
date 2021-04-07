@@ -55,14 +55,15 @@ public class AddEntryAdapter extends RecyclerView.Adapter<AddEntryAdapter.ViewHo
         holder.txtTrackName.setText(track.getName());
         holder.txtUnit.setText(track.getUnit());
         if (track.getEntries().size() > 0) {
-            holder.mtfName.setHint(String.valueOf(track.getEntries().get(track.getEntries().size() - 1).getValue()));
+            holder.mtfName.setText(String.valueOf(track.getEntries().get(track.getEntries().size() - 1).getValue()));
+        } else {
+            holder.mtfName.setText("0");
         }
 
         holder.bubbleBar.setThumbColor(context.getColor(R.color.colorPrimary));
         holder.bubbleBar.setSecondTrackColor(context.getColor(R.color.colorPrimary));
         holder.bubbleBar.setBubbleColor(context.getColor(R.color.colorPrimary));
         if (track.getEntries().size() > 0 && track.getEntries().get(track.getEntries().size() - 1).getValue() <= 10) {
-           //holder.rangeSeekbar.setMinStartValue((int) track.getEntries().get(track.getEntries().size() - 1).getValue());
             holder.bubbleBar.setProgress((int) track.getEntries().get(track.getEntries().size() - 1).getValue());
         }
 
@@ -73,14 +74,9 @@ public class AddEntryAdapter extends RecyclerView.Adapter<AddEntryAdapter.ViewHo
             holder.bubbleBar.setSecondTrackColor(Color.parseColor(track.getColor()));
         }
 
-     //  holder.bubbleBar.setSelected(true);
-
         holder.bubbleBar.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
             @Override
             public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
-//                holder.txtMin.setText(bubbleSeekBar.getMin()+"");
-//                holder.txtMax.setText(bubbleSeekBar.getMax()+"");
-
                 holder.txtMin.setText(progress+"");
                 if (progress != 0.0 ) {
                     holder.mtfName.setText(progress + "");

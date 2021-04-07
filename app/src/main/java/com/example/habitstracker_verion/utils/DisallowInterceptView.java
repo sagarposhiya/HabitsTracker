@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
-public class DisallowInterceptView extends LinearLayout {
+public class    DisallowInterceptView extends LinearLayout {
 
     public DisallowInterceptView(Context context) {
         super(context);

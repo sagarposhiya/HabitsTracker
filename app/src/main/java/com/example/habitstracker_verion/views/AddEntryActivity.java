@@ -188,8 +188,6 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
 
     private void setCurrentDate() {
         nowSelected = Calendar.getInstance();
-        //  now.set(year, month - 1, dayOfMonth, 0, 0);
-        // SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat format1 = new SimpleDateFormat("MMM dd YYYY  hh:mm");
         String formatted = format1.format(nowSelected.getTime());
         txtToolbarTitle.setText("" + formatted);
@@ -253,7 +251,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
             EditText nameEditText = view.findViewById(R.id.mtfName);
             String name = nameEditText.getText().toString();
 
-            if (!TextUtils.isEmpty(name)) {
+//            if (!TextUtils.isEmpty(name)) {
                 isChanged = true;
                 final Entry[] entry = new Entry[1];
                 final Track[] track = new Track[1];
@@ -279,28 +277,16 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
                     });
 
                 } finally {
-//                    if (realm != null) {
-//                       RealmManager.closeInstance();
-//                       // onBackPressed();
-//                    }
                 }
-//                if (track[0].isValueChanged()) {
+
                 realm = RealmManager.getInstance();
                 realm.beginTransaction();
                 RealmList<Entry> entries = track[0].getEntries();
                 entries.add(entry[0]);
                 realm.commitTransaction();
-//                }
-            } else {
-                isChanged = false;
-            }
+
         }
 
-//        if (!isChanged){
-//           // Toast.makeText(this, "Please change value", Toast.LENGTH_SHORT).show();
-//        } else {
-//            finish();
-//            finishAffinity();
             Toast.makeText(this, "Saved Entries", Toast.LENGTH_SHORT).show();
             if (action.equalsIgnoreCase(Constants.NOTIFICATION)) {
                 Toast.makeText(this, "Saved Entries", Toast.LENGTH_SHORT).show();
@@ -313,7 +299,7 @@ public class AddEntryActivity extends AppCompatActivity implements View.OnClickL
             } else if (action.equalsIgnoreCase(Constants.PLUS_BUTTON)){
                 onBackPressed();
             }
-//        }
+
     }
 
     public int getNextKey() {
